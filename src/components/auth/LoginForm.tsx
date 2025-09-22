@@ -1,14 +1,12 @@
 import React from "react";
 import Button from "components/base-components/Button";
 import Input from "components/base-components/Input";
+import { Link } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
   return (
-    <div className="w-full max-w-md bg-gray-100 rounded-xl shadow-xl p-8 space-y-8">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold">Welcome Back</h2>
-        <p className="mt-2 text-sm">Log in to manage your finances.</p>
-      </div>
+    <div className="w-full space-y-8 ">
+     
       <form className="space-y-6">
         <Input
           id="email"
@@ -40,21 +38,15 @@ const LoginForm: React.FC = () => {
             </label>
           </div>
           <div className="text-sm">
-            <a className="font-medium text-teal-400 hover:underline" href="#">
+            <Link to="/forgot-password" className="font-medium text-teal-400 hover:underline">
               Forgot password?
-            </a>
+            </Link>
           </div>
         </div>
-        <Button type="submit">
-          Log In
+        <Button type="submit" text="Login">
         </Button>
       </form>
-      <p className="text-center text-sm text-subtle-light">
-        Don't have an account?{" "}
-        <a className="font-medium text-teal-400 hover:underline" href="#">
-          Sign up
-        </a>
-      </p>
+      
     </div>
   );
 };
