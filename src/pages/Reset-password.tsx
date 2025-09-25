@@ -1,6 +1,6 @@
 import React from "react";
 import AuthLayout from "components/auth/AuthLayout";
-import SetPasswordForm from "components/auth/SetPasswordForm";
+import SetPasswordForm from "components/auth/ResetPasswordForm";
 
 const SetPassword: React.FC = () => {
   return (

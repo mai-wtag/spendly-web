@@ -1,31 +1,22 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Input from "components/base-components/Input";
-import Button from "components/base-components/Button";
+import FormPanel from "components/auth/FormPanel";
+import type { FormField } from "components/auth/FormTypes";
+
 
 const ForgotPasswordForm: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const fields: FormField[] = [
+    { id: "email", name: "email", type: "email", placeholder: "Enter your email", required: true },
+  ];
+
+  const handleSubmit = (values: Record<string, string>) => {
+    console.log("Forgot password:", values);
     navigate("/set-password");
   };
 
-  return (
-    <div className="w-full space-y-8">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Enter your email"
-          required
-        />
-        <Button type="submit" text="Reset Password" />
-      </form>
-    </div>
-  );
+  return <FormPanel fields={fields} submitText="Reset Password" onSubmit={handleSubmit} />;
 };
 
 export default ForgotPasswordForm;

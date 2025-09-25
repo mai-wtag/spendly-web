@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "pages/Login";
 import Signup from "pages/Sign-up";
-import ForgotPasswordPage from "pages/ForgotPassword";
-import SetPassword from "pages/SetPassword";
+import ForgotPasswordPage from "pages/Forgot-password";
+import SetPassword from "pages/Reset-password";
 
 const RouteComponent = () => {
   return (

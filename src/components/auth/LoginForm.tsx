@@ -1,53 +1,28 @@
 import React from "react";
-import Button from "components/base-components/Button";
-import Input from "components/base-components/Input";
 import { Link } from "react-router-dom";
+import type { FormField } from "components/auth/FormTypes"; 
+import FormPanel from "components/auth/FormPanel";
+
 
 const LoginForm: React.FC = () => {
+  const fields: FormField[] = [
+    { id: "email", name: "email", placeholder: "Email or Username", required: true },
+    { id: "password", name: "password", type: "password", placeholder: "Password", required: true },
+  ];
+
+  const handleSubmit = (values: Record<string, string>) => {
+    console.log("Login values:", values);
+  };
+
   return (
-    <div className="w-full space-y-8 ">
-     
-      <form className="space-y-6">
-        <Input
-          id="email"
-          name="email"
-          type="text"
-          placeholder="Email or Username"
-          required
-        />
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          required
-        />
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              className="h-4 w-4 rounded border-border-light"
-            />
-            <label
-              htmlFor="remember-me"
-              className="ml-2 block text-sm text-content-light"
-            >
-              Remember me
-            </label>
-          </div>
-          <div className="text-sm">
-            <Link to="/forgot-password" className="font-medium text-teal-400 hover:underline">
-              Forgot password?
-            </Link>
-          </div>
-        </div>
-        <Button type="submit" text="Login">
-        </Button>
-      </form>
-      
-    </div>
+    <>
+      <FormPanel fields={fields} submitText="Login" onSubmit={handleSubmit} />
+      <div className="text-sm mt-2">
+        <Link to="/forgot-password" className="font-medium text-teal-400 hover:underline">
+          Forgot password?
+        </Link>
+      </div>
+    </>
   );
 };
 
