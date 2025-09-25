@@ -13,7 +13,7 @@ const ForgotPasswordForm: React.FC = () => {
 
   const handleSubmit = (values: Record<string, string>) => {
     console.log("Forgot password:", values);
-    navigate("/set-password");
+    navigate("/reset-password");
   };
 
   return <FormPanel fields={fields} submitText="Reset Password" onSubmit={handleSubmit} />;

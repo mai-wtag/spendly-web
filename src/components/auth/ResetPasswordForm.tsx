@@ -3,7 +3,7 @@ import FormPanel from "components/auth/FormPanel";
 import type { FormField } from "components/auth/FormTypes";
 
 
-const SetPasswordForm: React.FC = () => {
+const ResetPasswordForm: React.FC = () => {
   const [error, setError] = useState("");
 
   const fields: FormField[] = [
@@ -27,4 +27,4 @@ const SetPasswordForm: React.FC = () => {
   return <FormPanel fields={fields} submitText="Update Password" onSubmit={handleSubmit} error={error} />;
 };
 
-export default SetPasswordForm;
+export default ResetPasswordForm;

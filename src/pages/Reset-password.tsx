@@ -1,8 +1,8 @@
 import React from "react";
 import AuthLayout from "components/auth/AuthLayout";
-import SetPasswordForm from "components/auth/ResetPasswordForm";
+import ResetPasswordForm from "components/auth/ResetPasswordForm";
 
-const SetPassword: React.FC = () => {
+const ResetPassword: React.FC = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-100 font-display w-full justify-center items-center">
       <AuthLayout
@@ -12,10 +12,10 @@ const SetPassword: React.FC = () => {
         footerLinkText="Back to Log In"
         footerLinkHref="/"
       >
-        <SetPasswordForm />
+        <ResetPasswordForm />
       </AuthLayout>
     </div>
   );
 };
 
-export default SetPassword;
+export default ResetPassword;

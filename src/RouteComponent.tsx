@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "pages/Login";
 import Signup from "pages/Sign-up";
 import ForgotPasswordPage from "pages/Forgot-password";
-import SetPassword from "pages/Reset-password";
+import ResetPassword from "pages/Reset-password";
 
 const RouteComponent = () => {
   return (
@@ -10,7 +10,7 @@ const RouteComponent = () => {
       <Route path="/" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/set-password" element={<SetPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
     </Routes>
   );
 };
