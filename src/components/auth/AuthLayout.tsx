@@ -1,4 +1,3 @@
-// src/components/layout/AuthLayout.tsx
 import React from "react";
 import Logo from "components/base-components/Logo";
 
