@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FormPanel from "components/auth/FormPanel";
 import AuthLayout from "components/auth/AuthLayout";
 import type { FormField } from "components/auth/FormTypes";
@@ -19,13 +19,7 @@ const ForgotPassword: React.FC = () => {
     submitText: "Reset Password",
     redirectLink: { text: "Back to Log In", to: "/" },
     fields: [
-      {
-        id: "email",
-        name: "email",
-        type: "email",
-        placeholder: "Enter your email",
-        required: true,
-      },
+      { id: "email", name: "email", type: "email", placeholder: "Enter your email", required: true },
     ],
   };
 

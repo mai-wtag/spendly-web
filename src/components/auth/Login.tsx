@@ -17,7 +17,7 @@ const Login: React.FC = () => {
     submitText: "Login",
     redirectLink: { text: "Don't have an account?", to: "/signup" },
     fields: [
-      { id: "email", name: "email", placeholder: "Email or Username", required: true },
+      { id: "email", name: "email", type: "email", placeholder: "Email or Username", required: true },
       { id: "password", name: "password", type: "password", placeholder: "Password", required: true },
     ],
   };
