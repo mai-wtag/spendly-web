@@ -15,7 +15,7 @@ export default defineConfig({
       'assets': path.resolve(__dirname, './src/assets'),
       'actions': path.resolve(__dirname, './src/actions'),
       'store': path.resolve(__dirname, './src/store'),
-      'slices': path.resolve(__dirname, './src/slices')
+      'slices': path.resolve(__dirname, './src/slices'),
       'utils': path.resolve(__dirname, './src/utils')
     }
   }
