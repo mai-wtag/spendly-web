@@ -1,9 +1,15 @@
+export interface ValidationRule {
+  type: "required" | "email" | "minLength" | "maxLength" | "match";
+  value?: number | string;
+  message?: string; 
+}
+
 export interface FormField {
   id: string;
   name: string;
   type?: string;
   placeholder: string;
-  required?: boolean;
   value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
+  validations?: ValidationRule[];
 }

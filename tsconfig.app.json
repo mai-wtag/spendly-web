@@ -29,7 +29,8 @@
       "actions/*": ["actions/*"],
       "components/*": ["components/*"],
       "store": ["store"],
-      "slices/*": ["slices/*"]
+      "slices/*": ["slices/*"],
+      "utils/*": ["utils/*"]
     }
   },
   "include": ["src"]
