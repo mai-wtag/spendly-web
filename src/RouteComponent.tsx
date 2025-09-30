@@ -1,8 +1,11 @@
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Login from "pages/Login";
 import Signup from "pages/Sign-up";
 import ForgotPasswordPage from "pages/Forgot-password";
 import ResetPassword from "pages/Reset-password";
+import Dashboard from "pages/Dashboard";
+import PrivateRoute from "components/routes/PrivateRoute";
 
 const RouteComponent = () => {
   return (
@@ -11,6 +14,17 @@ const RouteComponent = () => {
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="*" element={<Login />} />
     </Routes>
   );
 };
