@@ -1,5 +1,6 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import Login from "pages/Login";
 import Signup from "pages/Sign-up";
 import ForgotPasswordPage from "pages/Forgot-password";
@@ -7,7 +8,7 @@ import ResetPassword from "pages/Reset-password";
 import Dashboard from "pages/Dashboard";
 import PrivateRoute from "components/routes/PrivateRoute";
 
-const RouteComponent = () => {
+const RouteComponent: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
@@ -24,7 +25,7 @@ const RouteComponent = () => {
         }
       />
 
-      <Route path="*" element={<Login />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };

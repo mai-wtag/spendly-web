@@ -13,6 +13,7 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   forgotEmail: string | null;
+  isInitialized: boolean;
 }
 
 const initialState: AuthState = {
@@ -21,11 +22,12 @@ const initialState: AuthState = {
   loading: false,
   error: null,
   forgotEmail: null,
+  isInitialized: false,
 };
-
 
 const saveUserToLocalStorage = (user: User) => {
   localStorage.setItem("user", JSON.stringify(user));
+  localStorage.removeItem("loggedOut");
 };
 
 const getUserFromLocalStorage = (): User | null => {
@@ -33,12 +35,14 @@ const getUserFromLocalStorage = (): User | null => {
   return user ? JSON.parse(user) : null;
 };
 
+const removeUserFromLocalStorage = () => {
+  localStorage.removeItem("user");
+};
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-
     loginStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -53,7 +57,6 @@ export const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-
 
     signupStart: (state) => {
       state.loading = true;
@@ -70,21 +73,28 @@ export const authSlice = createSlice({
       state.error = action.payload;
     },
 
-
-    forgotPasswordStart: (state) => { state.loading = true; state.error = null; state.forgotEmail = null; },
+    forgotPasswordStart: (state) => {
+      state.loading = true;
+      state.error = null;
+      state.forgotEmail = null;
+    },
     forgotPasswordSuccess: (state, action: PayloadAction<string>) => {
       state.loading = false;
-      state.forgotEmail = action.payload; 
+      state.forgotEmail = action.payload;
     },
-    forgotPasswordFailure: (state, action: PayloadAction<string>) => { state.loading = false; state.error = action.payload; },
+    forgotPasswordFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
 
-    
-    resetPasswordStart: (state) => { state.loading = true; state.error = null; },
+    resetPasswordStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
     resetPasswordSuccess: (state, action: PayloadAction<string>) => {
       state.loading = false;
       if (state.user) state.user.password = action.payload;
 
-      
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         const parsed = JSON.parse(storedUser);
@@ -94,31 +104,42 @@ export const authSlice = createSlice({
 
       state.forgotEmail = null;
     },
-    resetPasswordFailure: (state, action: PayloadAction<string>) => { state.loading = false; state.error = action.payload; },
-
-
-    logout: (state) => {
-      state.user = null;
-      state.isAuthenticated = false;
+    resetPasswordFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
     },
 
-  
+    logout: (state) => {
+      state.isAuthenticated = false;
+      localStorage.setItem("loggedOut", "true");
+      state.user = state.user || null;
+    },
+
     loadUser: (state) => {
       const user = getUserFromLocalStorage();
-      if (user) {
-        state.user = user;
-        state.isAuthenticated = false;
-      }
+      const loggedOut = localStorage.getItem("loggedOut");
+      state.user = user;
+      state.isAuthenticated = !!user && !loggedOut;
+      state.isInitialized = true;
     },
   },
 });
 
 export const {
-  loginStart, loginSuccess, loginFailure,
-  signupStart, signupSuccess, signupFailure,
-  forgotPasswordStart, forgotPasswordSuccess, forgotPasswordFailure,
-  resetPasswordStart, resetPasswordSuccess, resetPasswordFailure,
-  logout, loadUser,
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  signupStart,
+  signupSuccess,
+  signupFailure,
+  forgotPasswordStart,
+  forgotPasswordSuccess,
+  forgotPasswordFailure,
+  resetPasswordStart,
+  resetPasswordSuccess,
+  resetPasswordFailure,
+  logout,
+  loadUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;
