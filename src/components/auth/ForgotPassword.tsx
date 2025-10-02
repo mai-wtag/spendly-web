@@ -7,21 +7,9 @@ import type { FormField } from "components/auth/FormTypes";
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
 
-  const formObj: {
-    title: string;
-    description: string;
-    submitText: string;
-    redirectLink: { text: string; to: string };
-    fields: FormField[];
-  } = {
-    title: "Forgot Password?",
-    description: "No worries, we'll send you reset instructions.",
-    submitText: "Reset Password",
-    redirectLink: { text: "Back to Log In", to: "/" },
-    fields: [
-      { id: "email", name: "email", type: "email", placeholder: "Enter your email", required: true },
-    ],
-  };
+  const fields: FormField[] = [
+    { id: "email", name: "email", type: "email", placeholder: "Enter your email", required: true, validations: [{ type: "email" }] },
+  ];
 
   const handleSubmit = (values: Record<string, string>) => {
     console.log("Forgot password values:", values);
@@ -31,17 +19,13 @@ const ForgotPassword: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
       <AuthLayout
-        title={formObj.title}
-        subtitle={formObj.description}
-        footerText={formObj.redirectLink.text}
+        title="Forgot Password?"
+        subtitle="No worries, we'll send you reset instructions."
+        footerText="Back to Log In"
         footerLinkText="Back to Log In"
-        footerLinkHref={formObj.redirectLink.to}
+        footerLinkHref="/"
       >
-        <FormPanel
-          fields={formObj.fields}
-          submitText={formObj.submitText}
-          onSubmit={handleSubmit}
-        />
+        <FormPanel fields={fields} submitText="Reset Password" onSubmit={handleSubmit} />
       </AuthLayout>
     </div>
   );

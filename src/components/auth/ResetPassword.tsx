@@ -7,22 +7,10 @@ import type { FormField } from "components/auth/FormTypes";
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
 
-  const formObj: {
-    title: string;
-    description: string;
-    submitText: string;
-    redirectLink: { text: string; to: string };
-    fields: FormField[];
-  } = {
-    title: "Set New Password",
-    description: "Enter a strong password and confirm it to update your account.",
-    submitText: "Update Password",
-    redirectLink: { text: "Back to Log In", to: "/" },
-    fields: [
-      { id: "password", name: "password", type: "password", placeholder: "Enter new password", required: true },
-      { id: "confirmPassword", name: "confirmPassword", type: "password", placeholder: "Confirm new password", required: true },
-    ],
-  };
+  const fields: FormField[] = [
+    { id: "password", name: "password", type: "password", placeholder: "Enter new password", required: true, validations: [{ type: "minLength", value: 6 }] },
+    { id: "confirmPassword", name: "confirmPassword", type: "password", placeholder: "Confirm new password", required: true, validations: [{ type: "match", value: "password", message: "Passwords do not match" }] },
+  ];
 
   const handleSubmit = (values: Record<string, string>) => {
     console.log("Reset password values:", values);
@@ -32,17 +20,13 @@ const ResetPassword: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
       <AuthLayout
-        title={formObj.title}
-        subtitle={formObj.description}
-        footerText={formObj.redirectLink.text}
+        title="Set New Password"
+        subtitle="Enter a strong password and confirm it to update your account."
+        footerText="Back to Log In"
         footerLinkText="Back to Log In"
-        footerLinkHref={formObj.redirectLink.to}
+        footerLinkHref="/"
       >
-        <FormPanel
-          fields={formObj.fields}
-          submitText={formObj.submitText}
-          onSubmit={handleSubmit}
-        />
+        <FormPanel fields={fields} submitText="Update Password" onSubmit={handleSubmit} />
       </AuthLayout>
     </div>
   );
