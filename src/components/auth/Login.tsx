@@ -13,22 +13,10 @@ const Login: React.FC = () => {
   const auth = useSelector((state: RootState) => state.auth);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const formObj: {
-    title: string;
-    description: string;
-    submitText: string;
-    redirectLink: { text: string; to: string };
-    fields: FormField[];
-  } = {
-    title: "Welcome Back",
-    description: "Log in to manage your finances.",
-    submitText: "Login",
-    redirectLink: { text: "Don't have an account?", to: "/signup" },
-    fields: [
-      { id: "email", name: "email", type: "email", placeholder: "Email or Username", required: true },
-      { id: "password", name: "password", type: "password", placeholder: "Password", required: true },
-    ],
-  };
+  const fields: FormField[] = [
+    { id: "email", name: "email", placeholder: "Email or Username", required: true, validations: [{ type: "email" }] },
+    { id: "password", name: "password", type: "password", placeholder: "Password", required: true, validations: [{ type: "minLength", value: 6 }] },
+  ];
 
   const handleSubmit = (values: Record<string, string>) => {
     dispatch(login(values.email, values.password));
@@ -37,12 +25,10 @@ const Login: React.FC = () => {
   useEffect(() => {
     if (auth.isAuthenticated && !auth.error) {
       setShowSuccess(true);
-
       const timer = setTimeout(() => {
         setShowSuccess(false);
         navigate("/dashboard");
       }, 2000); 
-
       return () => clearTimeout(timer);
     }
   }, [auth.isAuthenticated, auth.error, navigate]);
@@ -50,20 +36,14 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6 relative">
       <AuthLayout
-        title={formObj.title}
-        subtitle={formObj.description}
-        footerText={formObj.redirectLink.text}
+        title="Welcome Back"
+        subtitle="Log in to manage your finances."
+        footerText="Don't have an account?"
         footerLinkText="Sign up"
-        footerLinkHref={formObj.redirectLink.to}
+        footerLinkHref="/signup"
       >
-        <FormPanel
-          fields={formObj.fields}
-          submitText={auth.loading ? "Logging in..." : formObj.submitText}
-          onSubmit={handleSubmit}
-        />
-
+        <FormPanel fields={fields} submitText={auth.loading ? "Logging in..." : "Login"} onSubmit={handleSubmit} />
         {auth.error && <p className="text-red-500 text-sm mt-2">{auth.error}</p>}
-
         <div className="text-sm mt-2">
           <Link to="/forgot-password" className="font-medium text-teal-400 hover:underline">
             Forgot password?
