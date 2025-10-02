@@ -12,6 +12,8 @@ const Signup: React.FC = () => {
   const navigate = useNavigate();
   const auth = useSelector((state: RootState) => state.auth);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
 
   const formObj: {
     title: string;
@@ -37,19 +39,28 @@ const Signup: React.FC = () => {
       alert("Passwords do not match");
       return;
     }
+    setSubmitted(true); 
     dispatch(signup(values.fullName, values.email, values.password));
   };
 
   useEffect(() => {
-    if (!auth.loading && !auth.error && auth.user && !auth.isAuthenticated) {
+    if (
+      submitted &&
+      !auth.loading &&
+      !auth.error &&
+      auth.user &&
+      !auth.isAuthenticated
+    ) {
       setShowSuccess(true);
       const timer = setTimeout(() => {
         setShowSuccess(false);
         navigate("/");
+        setSubmitted(false);
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [auth.loading, auth.error, auth.user, auth.isAuthenticated, navigate]);
+  }, [submitted, auth.loading, auth.error, auth.user, auth.isAuthenticated, navigate]);
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6 relative">

@@ -25,18 +25,32 @@ const initialState: AuthState = {
   isInitialized: false,
 };
 
+
 const saveUserToLocalStorage = (user: User) => {
-  localStorage.setItem("user", JSON.stringify(user));
+  const usersStr = localStorage.getItem("users");
+  const users = usersStr ? JSON.parse(usersStr) : [];
+
+
+  const existingIndex = users.findIndex((u: User) => u.email === user.email);
+  if (existingIndex !== -1) {
+    users[existingIndex] = user;
+  } else {
+    users.push(user);
+  }
+
+  localStorage.setItem("users", JSON.stringify(users));
   localStorage.removeItem("loggedOut");
 };
 
-const getUserFromLocalStorage = (): User | null => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
-};
 
-const removeUserFromLocalStorage = () => {
-  localStorage.removeItem("user");
+const getUserFromLocalStorage = (): User | null => {
+  const usersStr = localStorage.getItem("users");
+  const users: User[] = usersStr ? JSON.parse(usersStr) : [];
+  const loggedOut = localStorage.getItem("loggedOut");
+
+  if (!users.length || loggedOut) return null;
+
+  return users[0] || null;
 };
 
 export const authSlice = createSlice({
@@ -95,11 +109,14 @@ export const authSlice = createSlice({
       state.loading = false;
       if (state.user) state.user.password = action.payload;
 
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        const parsed = JSON.parse(storedUser);
-        parsed.password = action.payload;
-        localStorage.setItem("user", JSON.stringify(parsed));
+      const usersStr = localStorage.getItem("users");
+      if (usersStr) {
+        const users: User[] = JSON.parse(usersStr);
+        const index = users.findIndex((u) => u.email === state.forgotEmail);
+        if (index !== -1) {
+          users[index].password = action.payload;
+          localStorage.setItem("users", JSON.stringify(users));
+        }
       }
 
       state.forgotEmail = null;
@@ -117,9 +134,8 @@ export const authSlice = createSlice({
 
     loadUser: (state) => {
       const user = getUserFromLocalStorage();
-      const loggedOut = localStorage.getItem("loggedOut");
       state.user = user;
-      state.isAuthenticated = !!user && !loggedOut;
+      state.isAuthenticated = !!user;
       state.isInitialized = true;
     },
   },
