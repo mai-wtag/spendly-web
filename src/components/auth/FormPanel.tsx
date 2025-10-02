@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import Input from "components/base-components/Input";
 import Button from "components/base-components/Button";
 import type { FormField } from "components/auth/FormTypes";
-import { validateForm } from "utils/formValidation";
 
 interface FormPanelProps {
   fields: FormField[];
