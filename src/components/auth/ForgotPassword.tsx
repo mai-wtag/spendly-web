@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FormPanel from "components/auth/FormPanel";
 import AuthLayout from "components/auth/AuthLayout";
 import type { FormField } from "components/auth/FormTypes";

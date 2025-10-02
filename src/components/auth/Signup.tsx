@@ -4,7 +4,7 @@ import FormPanel from "components/auth/FormPanel";
 import AuthLayout from "components/auth/AuthLayout";
 import type { FormField } from "components/auth/FormTypes";
 
-const SignupForm: React.FC = () => {
+const Signup: React.FC = () => {
   const formObj: {
     title: string;
     description: string;
@@ -47,4 +47,4 @@ const SignupForm: React.FC = () => {
   );
 };
 
-export default SignupForm;
+export default Signup;
