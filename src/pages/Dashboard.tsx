@@ -1,9 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "store";
 import Sidebar from "components/layout/Sidebar";
 import Topbar from "components/layout/Topbar";
 
-
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const { balance, income, expenses, savings, transactions } = useSelector(
+    (state: RootState) => state.dashboard
+  );
+
   return (
     <div className="flex min-h-screen">
       <Sidebar />
@@ -15,22 +22,22 @@ const Dashboard: React.FC = () => {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
               <p className="text-sm text-gray-500">Total Balance</p>
-              <p className="text-2xl font-bold mt-2">$—</p>
+              <p className="text-2xl font-bold mt-2">${balance ?? "0"}</p>
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
               <p className="text-sm text-gray-500">Monthly Income</p>
-              <p className="text-2xl font-bold mt-2">$—</p>
+              <p className="text-2xl font-bold mt-2">${income ?? "0"}</p>
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
               <p className="text-sm text-gray-500">Monthly Expense</p>
-              <p className="text-2xl font-bold mt-2">$—</p>
+              <p className="text-2xl font-bold mt-2">${expenses ?? "0"}</p>
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
               <p className="text-sm text-gray-500">Monthly Savings</p>
-              <p className="text-2xl font-bold mt-2">$—</p>
+              <p className="text-2xl font-bold mt-2">${savings ?? "0"}</p>
             </div>
           </div>
 
@@ -43,16 +50,48 @@ const Dashboard: React.FC = () => {
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-semibold mb-3">Quick Actions</h3>
               <div className="flex flex-col gap-3">
-                <button className="rounded bg-teal-400 px-4 py-2 text-white">Add Transaction</button>
-                <button className="rounded bg-gray-100 px-4 py-2">Set Goal</button>
-                <button className="rounded bg-gray-100 px-4 py-2">View Reports</button>
+                <button
+                  className="rounded bg-teal-400 px-4 py-2 text-white"
+                  onClick={() => navigate("/transactions")}
+                >
+                  Add Transaction
+                </button>
+                <button
+                  className="rounded bg-gray-100 px-4 py-2"
+                  onClick={() => navigate("/budget-goals")}
+                >
+                  Set Goal
+                </button>
+                <button
+                  className="rounded bg-gray-100 px-4 py-2"
+                  onClick={() => navigate("/reports")}
+                >
+                  View Reports
+                </button>
               </div>
             </div>
           </div>
 
           <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
-            <div className="text-sm text-gray-500">Transaction list will appear here</div>
+            {transactions && transactions.length > 0 ? (
+              <ul className="divide-y divide-gray-100">
+                {transactions.map((t) => (
+                  <li key={t.id} className="py-2 flex justify-between text-sm">
+                    <span>{t.description}</span>
+                    <span
+                      className={`font-medium ${
+                        t.type === "income" ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {t.type === "income" ? "+" : "-"}${t.amount}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-sm text-gray-500">No transactions yet</div>
+            )}
           </div>
         </div>
       </main>
