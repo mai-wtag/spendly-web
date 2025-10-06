@@ -5,13 +5,7 @@ import Topbar from "components/layout/Topbar";
 
 const Dashboard: React.FC = () => {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-
-      <main className="flex-1 bg-gray-50">
-        <Topbar />
-
-        <div className="p-6">
+    <div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
               <p className="text-sm text-gray-500">Total Balance</p>
@@ -55,8 +49,6 @@ const Dashboard: React.FC = () => {
             <div className="text-sm text-gray-500">Transaction list will appear here</div>
           </div>
         </div>
-      </main>
-    </div>
   );
 };
 
