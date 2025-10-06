@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-interface Transaction {
+export interface Transaction {
   id: string;
   description: string;
   amount: number;
@@ -9,14 +9,14 @@ interface Transaction {
   date: string;
 }
 
-interface Goal {
+export interface Goal {
   id: string;
   title: string;
   targetAmount: number;
   progress: number;
 }
 
-interface DashboardState {
+export interface DashboardState {
   balance: number;
   income: number;
   expenses: number;
@@ -24,6 +24,9 @@ interface DashboardState {
   transactions: Transaction[];
   goals: Goal[];
 }
+
+const triggerStorageUpdate = () => window.dispatchEvent(new Event("storage"));
+
 
 const loadState = (): DashboardState => {
   const saved = localStorage.getItem("dashboard");
@@ -41,11 +44,12 @@ const loadState = (): DashboardState => {
 
 const saveState = (state: DashboardState) => {
   localStorage.setItem("dashboard", JSON.stringify(state));
+  triggerStorageUpdate();
 };
 
 const initialState: DashboardState = loadState();
 
-const dashboardSlice = createSlice({
+export const dashboardSlice = createSlice({
   name: "dashboard",
   initialState,
   reducers: {
@@ -69,7 +73,6 @@ const dashboardSlice = createSlice({
       state.goals.push(action.payload);
       saveState(state);
     },
-
 
     updateBalance: (state, action: PayloadAction<number>) => {
       state.balance = action.payload;
@@ -111,3 +114,4 @@ export const {
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;
+

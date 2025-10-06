@@ -6,6 +6,7 @@ import FormPanel from "components/auth/FormPanel";
 import AuthLayout from "components/auth/AuthLayout";
 import type { FormField } from "components/auth/FormTypes";
 import { signup } from "actions/authActions";
+import { useLocalStorageStore } from "hooks/useLocalStorageStore";
 
 const Signup: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,6 +15,8 @@ const Signup: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+ 
+  const [storedAuth] = useLocalStorageStore("auth", { isAuthenticated: false, user: null });
 
   const fields: FormField[] = [
     { id: "full-name", name: "fullName", placeholder: "Full Name", required: true },
@@ -27,17 +30,14 @@ const Signup: React.FC = () => {
       alert("Passwords do not match");
       return;
     }
-    setSubmitted(true); 
+    setSubmitted(true);
     dispatch(signup(values.fullName, values.email, values.password));
   };
 
   useEffect(() => {
     if (
-      submitted &&
-      !auth.loading &&
-      !auth.error &&
-      auth.user &&
-      !auth.isAuthenticated
+      (submitted && !auth.loading && !auth.error && auth.user && !auth.isAuthenticated) ||
+      storedAuth.isAuthenticated
     ) {
       setShowSuccess(true);
       const timer = setTimeout(() => {
@@ -47,8 +47,7 @@ const Signup: React.FC = () => {
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [submitted, auth.loading, auth.error, auth.user, auth.isAuthenticated, navigate]);
-
+  }, [submitted, auth, storedAuth, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6 relative">

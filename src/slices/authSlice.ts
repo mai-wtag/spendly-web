@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-interface User {
+export interface User {
   fullName?: string;
   email: string;
   password: string;
 }
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
@@ -15,6 +15,7 @@ interface AuthState {
   forgotEmail: string | null;
   isInitialized: boolean;
 }
+
 
 const initialState: AuthState = {
   user: null,
@@ -26,12 +27,14 @@ const initialState: AuthState = {
 };
 
 
+const triggerStorageUpdate = () => window.dispatchEvent(new Event("storage"));
+
+
 const saveUserToLocalStorage = (user: User) => {
   const usersStr = localStorage.getItem("users");
-  const users = usersStr ? JSON.parse(usersStr) : [];
+  const users: User[] = usersStr ? JSON.parse(usersStr) : [];
 
-
-  const existingIndex = users.findIndex((u: User) => u.email === user.email);
+  const existingIndex = users.findIndex((u) => u.email === user.email);
   if (existingIndex !== -1) {
     users[existingIndex] = user;
   } else {
@@ -40,6 +43,7 @@ const saveUserToLocalStorage = (user: User) => {
 
   localStorage.setItem("users", JSON.stringify(users));
   localStorage.removeItem("loggedOut");
+  triggerStorageUpdate();
 };
 
 
@@ -49,9 +53,9 @@ const getUserFromLocalStorage = (): User | null => {
   const loggedOut = localStorage.getItem("loggedOut");
 
   if (!users.length || loggedOut) return null;
-
   return users[0] || null;
 };
+
 
 export const authSlice = createSlice({
   name: "auth",
@@ -79,7 +83,7 @@ export const authSlice = createSlice({
     signupSuccess: (state, action: PayloadAction<User>) => {
       state.loading = false;
       state.user = action.payload;
-      state.isAuthenticated = false;
+      state.isAuthenticated = false; 
       saveUserToLocalStorage(action.payload);
     },
     signupFailure: (state, action: PayloadAction<string>) => {
@@ -120,6 +124,7 @@ export const authSlice = createSlice({
       }
 
       state.forgotEmail = null;
+      triggerStorageUpdate();
     },
     resetPasswordFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
@@ -129,7 +134,8 @@ export const authSlice = createSlice({
     logout: (state) => {
       state.isAuthenticated = false;
       localStorage.setItem("loggedOut", "true");
-      state.user = state.user || null;
+      state.user = null;
+      triggerStorageUpdate();
     },
 
     loadUser: (state) => {

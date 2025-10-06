@@ -14,13 +14,32 @@ import {
   resetPasswordFailure,
 } from "slices/authSlice";
 
-const getUsersFromLocalStorage = (): Array<{ fullName?: string; email: string; password: string }> => {
-  const usersStr = localStorage.getItem("users");
-  return usersStr ? JSON.parse(usersStr) : [];
+
+const getFromStorage = <T>(key: string, fallback: T): T => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? (JSON.parse(stored) as T) : fallback;
+  } catch {
+    return fallback;
+  }
 };
 
+const setToStorage = <T>(key: string, value: T) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    
+    window.dispatchEvent(new Event("storage"));
+  } catch (err) {
+    console.error(`Error writing ${key} to localStorage`, err);
+  }
+};
+
+
+const getUsersFromLocalStorage = () =>
+  getFromStorage<Array<{ fullName?: string; email: string; password: string }>>("users", []);
+
 const saveUsersToLocalStorage = (users: Array<{ fullName?: string; email: string; password: string }>) => {
-  localStorage.setItem("users", JSON.stringify(users));
+  setToStorage("users", users);
 };
 
 
@@ -36,10 +55,11 @@ export const login = (email: string, password: string) => (dispatch: AppDispatch
       dispatch(loginFailure("Invalid credentials"));
     } else {
       dispatch(loginSuccess(user));
+     
+      setToStorage("auth", { isAuthenticated: true, user });
     }
   }, 500);
 };
-
 
 export const signup = (fullName: string, email: string, password: string) => (dispatch: AppDispatch) => {
   dispatch(signupStart());
@@ -55,11 +75,11 @@ export const signup = (fullName: string, email: string, password: string) => (di
     const newUser = { fullName, email, password };
     users.push(newUser);
     saveUsersToLocalStorage(users);
-
     dispatch(signupSuccess(newUser));
+
+    setToStorage("auth", { isAuthenticated: true, user: newUser });
   }, 500);
 };
-
 
 export const forgotPassword = (email: string) => (dispatch: AppDispatch) => {
   dispatch(forgotPasswordStart());
@@ -75,27 +95,26 @@ export const forgotPassword = (email: string) => (dispatch: AppDispatch) => {
   }, 500);
 };
 
+export const resetPassword =
+  (newPassword: string) => (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(resetPasswordStart());
+    setTimeout(() => {
+      const { forgotEmail } = getState().auth;
+      if (!forgotEmail) {
+        dispatch(resetPasswordFailure("Invalid flow, no email found"));
+        return;
+      }
 
-export const resetPassword = (newPassword: string) => (dispatch: AppDispatch, getState: () => RootState) => {
-  dispatch(resetPasswordStart());
-  setTimeout(() => {
-    const { forgotEmail } = getState().auth;
-    if (!forgotEmail) {
-      dispatch(resetPasswordFailure("Invalid flow, no email found"));
-      return;
-    }
+      const users = getUsersFromLocalStorage();
+      const index = users.findIndex((u) => u.email === forgotEmail);
 
-    const users = getUsersFromLocalStorage();
-    const index = users.findIndex((u) => u.email === forgotEmail);
+      if (index === -1) {
+        dispatch(resetPasswordFailure("No matching user found"));
+        return;
+      }
 
-    if (index === -1) {
-      dispatch(resetPasswordFailure("No matching user found"));
-      return;
-    }
-
-    users[index].password = newPassword;
-    saveUsersToLocalStorage(users);
-
-    dispatch(resetPasswordSuccess(newPassword));
-  }, 500);
-};
+      users[index].password = newPassword;
+      saveUsersToLocalStorage(users);
+      dispatch(resetPasswordSuccess(newPassword));
+    }, 500);
+  };

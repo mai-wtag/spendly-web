@@ -30,6 +30,7 @@
       "components/*": ["components/*"],
       "store": ["store"],
       "slices/*": ["slices/*"],
+      "hooks/*": ["hooks/*"],
       "utils/*": ["utils/*"]
     }
   },
