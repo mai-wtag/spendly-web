@@ -86,7 +86,7 @@ const FormPanel: React.FC<FormPanelProps> = ({ fields, submitText, onSubmit }) =
             error={errors[field.name]?.message as string}
           />
         ))}
-        <Button type="submit" text={submitText} />
+        <Button type="submit" text={submitText} fullWidth />
       </form>
     </div>
   );

@@ -1,53 +1,34 @@
 import React from "react";
-import Sidebar from "components/layout/Sidebar";
-import Topbar from "components/layout/Topbar";
-
+import Card from "components/base-components/Card";
+import QuickActions from "components/base-components/QuickActions";
+import RecentTransactions from "components/base-components/RecentTransactions";
 
 const Dashboard: React.FC = () => {
   return (
-    <div>
+        <div>
+
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <p className="text-sm text-gray-500">Total Balance</p>
-              <p className="text-2xl font-bold mt-2">$—</p>
-            </div>
-
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <p className="text-sm text-gray-500">Monthly Income</p>
-              <p className="text-2xl font-bold mt-2">$—</p>
-            </div>
-
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <p className="text-sm text-gray-500">Monthly Expense</p>
-              <p className="text-2xl font-bold mt-2">$—</p>
-            </div>
-
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <p className="text-sm text-gray-500">Monthly Savings</p>
-              <p className="text-2xl font-bold mt-2">$—</p>
-            </div>
+            <Card title="Total Balance" value={`$`} />
+            <Card title="Monthly Income" value={`$`} />
+            <Card title="Monthly Expense" value={`$`} />
+            <Card title="Monthly Savings" value={`$`} />
           </div>
+
 
           <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2">
-              <h3 className="text-lg font-semibold mb-3">Cash Flow</h3>
+            <Card title="Cash Flow" className="lg:col-span-2">
               <div className="h-64 bg-gray-50 rounded" aria-hidden />
-            </div>
+            </Card>
 
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-3">Quick Actions</h3>
-              <div className="flex flex-col gap-3">
-                <button className="rounded bg-teal-400 px-4 py-2 text-white">Add Transaction</button>
-                <button className="rounded bg-gray-100 px-4 py-2">Set Goal</button>
-                <button className="rounded bg-gray-100 px-4 py-2">View Reports</button>
-              </div>
-            </div>
+            <Card title="Quick Actions">
+              <QuickActions />
+            </Card>
           </div>
 
-          <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
-            <div className="text-sm text-gray-500">Transaction list will appear here</div>
-          </div>
+
+          <Card title="Recent Transactions" className="mt-6">
+            <RecentTransactions />
+          </Card>
         </div>
   );
 };
