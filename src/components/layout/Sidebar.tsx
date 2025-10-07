@@ -1,7 +1,7 @@
 import { ChartBar, Goal, LayoutDashboard, Receipt, Settings } from "lucide-react";
 import React from "react";
 import Logo from "components/base-components/Logo";
-import SidebarItem from "components/base-components/SidebarItem";
+import SidebarItem from "components/dashboard/SidebarItem";
 
 const Sidebar: React.FC = () => {
   return (

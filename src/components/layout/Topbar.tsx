@@ -58,7 +58,7 @@ const Topbar: React.FC = () => {
 
   return (
     <header className="flex h-20 items-center justify-between border-b border-gray-200 px-6 bg-white">
-      <div className="text-lg font-semibold">Welcome back, {userName}</div>
+      <div className="text-xl font-semibold">Welcome back, {userName}</div>
 
       <div className="flex items-center gap-4">
 

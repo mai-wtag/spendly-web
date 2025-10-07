@@ -3,7 +3,7 @@ import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import { Outlet } from 'react-router-dom';
 
-function AppLayout(props) {
+function AppLayout() {
   return (
     <div>
       <div className="flex min-h-screen">

@@ -12,8 +12,8 @@ const Card: React.FC<CardProps> = ({ title, value, children, className = "" }) =
     <div
       className={`rounded-xl border border-gray-200 bg-white p-6 shadow-sm ${className}`}
     >
-      <p className="text-sm text-gray-500">{title}</p>
-      {value !== undefined && <p className="text-2xl font-bold mt-2">{value}</p>}
+      <p className="text-lg font-semibold text-black mb-4">{title}</p>
+      {value !== undefined && <p className="text-2xl font-bold my-2">{value}</p>}
       {children}
     </div>
   );

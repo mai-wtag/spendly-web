@@ -8,7 +8,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   fullWidth?: boolean;
-  text:string;
+  text: string;
+  icon?: React.ReactNode;
+  iconPosition?: "left" | "right";
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -17,15 +19,17 @@ const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   className,
   text,
+  icon,
+  iconPosition = "left",
   ...props
 }) => {
-
   const variantClasses = {
     primary: "bg-teal-400 text-white hover:bg-teal-500",
     secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
     danger: "bg-red-500 text-white hover:bg-red-600",
     success: "bg-green-500 text-white hover:bg-green-600",
-    outline: "bg-transparent border border-gray-300 text-gray-800 hover:bg-gray-100",
+    outline:
+      "bg-transparent border border-gray-300 text-gray-800 hover:bg-gray-100",
   };
 
   const sizeClasses = {
@@ -37,7 +41,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button
       className={clsx(
-        "rounded-lg font-medium shadow-sm transition-colors",
+        "inline-flex items-center justify-center gap-2 rounded-lg font-medium shadow-sm transition-colors",
         variantClasses[variant],
         sizeClasses[size],
         fullWidth && "w-full",
@@ -45,7 +49,13 @@ const Button: React.FC<ButtonProps> = ({
       )}
       {...props}
     >
-      {text}
+      {icon && iconPosition === "left" && (
+        <span className="flex items-center">{icon}</span>
+      )}
+      <span>{text}</span>
+      {icon && iconPosition === "right" && (
+        <span className="flex items-center">{icon}</span>
+      )}
     </button>
   );
 };
