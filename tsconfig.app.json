@@ -28,13 +28,10 @@
     /* Path aliases */
     "baseUrl": "src",
     "paths": {
-      "actions/*": ["actions/*"],
       "components/*": ["components/*"],
-      "store": ["store"],
-      "slices/*": ["slices/*"],
-      "hooks/*": ["hooks/*"],
-      "utils/*": ["utils/*"],
-      "routes/*": ["routes/*"]
+      "pages/*": ["pages/*"],
+      "routes/*": ["routes/*"],
+      "assets/*": ["assets/*"]
     }
   },
   "include": ["src"]
