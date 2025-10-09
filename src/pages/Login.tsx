@@ -16,6 +16,10 @@ const Login: React.FC = () => {
         name: "email",
         placeholder: "Email or Username",
         required: true,
+        validations: [
+          { type: "required", message: "Email is required" },
+          { type: "email", message: "Invalid email address" },
+        ],
       },
       {
         id: "password",
@@ -23,6 +27,10 @@ const Login: React.FC = () => {
         type: "password",
         placeholder: "Password",
         required: true,
+        validations: [
+          { type: "required", message: "Password is required" },
+          { type: "minLength", value: 6, message: "Password must be at least 6 characters" },
+        ],
       },
     ],
   };

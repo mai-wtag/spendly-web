@@ -1,3 +1,9 @@
+export interface ValidationRule {
+  type: "required" | "email" | "minLength" | "maxLength" | "match";
+  value?: number | string;
+  message?: string; 
+}
+
 export interface FormField {
   id: string;
   name: string;
@@ -8,6 +14,7 @@ export interface FormField {
   options?: { label: string; value: string }[];
   component?: React.FC<any>; 
   onChange?: (e: React.ChangeEvent<any>) => void;
+  validations?: ValidationRule[];
 }
 
 export interface AuthFormConfig {
