@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import Login from "pages/login";
-import Signup from "pages/sign-up";
-import ForgotPasswordPage from "pages/forgot-password";
-import ResetPassword from "pages/reset-password";
+import Login from "pages/Login";
+import Signup from "pages/Sign-up";
+import ForgotPasswordPage from "pages/Forgot-password";
+import ResetPassword from "pages/Reset-password";
 import { ROUTES } from "./paths";
 
 const RouteComponent: React.FC = () => {
