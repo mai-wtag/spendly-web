@@ -1,5 +1,3 @@
-import React from "react";
-
 const Logo: React.FC<{ className?: string }> = ({ className }) => (
   <svg
     className={`h-10 w-auto text-teal-400 ${className || ""}`}

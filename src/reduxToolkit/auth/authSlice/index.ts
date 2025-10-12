@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-interface User {
+export interface User {
   fullName?: string;
   email: string;
   password: string;
 }
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
@@ -26,17 +26,37 @@ const initialState: AuthState = {
 };
 
 const saveUserToLocalStorage = (user: User) => {
-  localStorage.setItem("user", JSON.stringify(user));
-  localStorage.removeItem("loggedOut");
+  const usersStr = localStorage.getItem("users");
+  const users: User[] = usersStr ? JSON.parse(usersStr) : [];
+
+  const existingIndex = users.findIndex((u) => u.email === user.email);
+  if (existingIndex !== -1) {
+    users[existingIndex] = user;
+  } else {
+    users.push(user);
+  }
+
+  localStorage.setItem("users", JSON.stringify(users));
 };
 
 const getUserFromLocalStorage = (): User | null => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
-};
+  try {
+    const authStr = localStorage.getItem("auth");
+    const loggedOut = localStorage.getItem("loggedOut");
 
-const removeUserFromLocalStorage = () => {
-  localStorage.removeItem("user");
+    if (loggedOut === "true") return null;
+
+    if (authStr) {
+      const authData = JSON.parse(authStr);
+      if (authData.isAuthenticated && authData.user) {
+        return authData.user;
+      }
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
 };
 
 export const authSlice = createSlice({
@@ -51,11 +71,13 @@ export const authSlice = createSlice({
       state.loading = false;
       state.user = action.payload;
       state.isAuthenticated = true;
+      state.error = null;
       saveUserToLocalStorage(action.payload);
     },
     loginFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
       state.error = action.payload;
+      state.isAuthenticated = false;
     },
 
     signupStart: (state) => {
@@ -66,6 +88,7 @@ export const authSlice = createSlice({
       state.loading = false;
       state.user = action.payload;
       state.isAuthenticated = false;
+      state.error = null;
       saveUserToLocalStorage(action.payload);
     },
     signupFailure: (state, action: PayloadAction<string>) => {
@@ -81,6 +104,7 @@ export const authSlice = createSlice({
     forgotPasswordSuccess: (state, action: PayloadAction<string>) => {
       state.loading = false;
       state.forgotEmail = action.payload;
+      state.error = null;
     },
     forgotPasswordFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
@@ -93,13 +117,20 @@ export const authSlice = createSlice({
     },
     resetPasswordSuccess: (state, action: PayloadAction<string>) => {
       state.loading = false;
-      if (state.user) state.user.password = action.payload;
+      state.error = null;
+      
+      if (state.user) {
+        state.user.password = action.payload;
+      }
 
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        const parsed = JSON.parse(storedUser);
-        parsed.password = action.payload;
-        localStorage.setItem("user", JSON.stringify(parsed));
+      const usersStr = localStorage.getItem("users");
+      if (usersStr) {
+        const users: User[] = JSON.parse(usersStr);
+        const index = users.findIndex((u) => u.email === state.forgotEmail);
+        if (index !== -1) {
+          users[index].password = action.payload;
+          localStorage.setItem("users", JSON.stringify(users));
+        }
       }
 
       state.forgotEmail = null;
@@ -111,15 +142,15 @@ export const authSlice = createSlice({
 
     logout: (state) => {
       state.isAuthenticated = false;
-      localStorage.setItem("loggedOut", "true");
-      state.user = state.user || null;
+      state.user = null;
+      state.error = null;
+      state.forgotEmail = null;
     },
 
     loadUser: (state) => {
       const user = getUserFromLocalStorage();
-      const loggedOut = localStorage.getItem("loggedOut");
       state.user = user;
-      state.isAuthenticated = !!user && !loggedOut;
+      state.isAuthenticated = !!user;
       state.isInitialized = true;
     },
   },
