@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import type { RootState, AppDispatch } from "reduxToolkit/store";
 import { logout } from "reduxToolkit/auth/authSlice";
 import { useLocalStorageStore } from "hooks/useLocalStorageStore";

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 import { Toaster } from "react-hot-toast";
 import type { AppDispatch, RootState } from "reduxToolkit/store";
 import { loadUser } from "reduxToolkit/auth/authSlice";
