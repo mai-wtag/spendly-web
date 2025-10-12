@@ -10,13 +10,13 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      'components': path.resolve(__dirname, './src/components'),
-      'pages': path.resolve(__dirname, './src/pages'),
-      'assets': path.resolve(__dirname, './src/assets'),
-      'actions': path.resolve(__dirname, './src/actions'),
-      'store': path.resolve(__dirname, './src/store'),
-      'slices': path.resolve(__dirname, './src/slices'),
-      'utils': path.resolve(__dirname, './src/utils')
-    }
-  }
-})
+      'components': path.resolve(__dirname, 'src/components'),
+      'pages': path.resolve(__dirname, 'src/pages'),
+      'assets': path.resolve(__dirname, 'src/assets'),
+      "routes": path.resolve(__dirname, "src/routes"),
+      "reduxToolkit": path.resolve(__dirname, "src/reduxToolkit"),
+      "utils": path.resolve(__dirname, "src/utils"),
+      "hooks": path.resolve(__dirname, "src/hooks")
+    },
+  },
+});

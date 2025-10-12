@@ -6,7 +6,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#2DD4BF", // Teal
+        primary: "#2dd4bf",
         "background-light": "#f6f8f8",
         "background-dark": "#11211f",
         "content-light": "#1f2937",
