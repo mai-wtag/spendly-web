@@ -11,7 +11,6 @@ export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  error: string | null;
   forgotEmail: string | null;
   isInitialized: boolean;
 }
@@ -20,7 +19,6 @@ const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   loading: false,
-  error: null,
   forgotEmail: null,
   isInitialized: false,
 };
@@ -65,59 +63,48 @@ export const authSlice = createSlice({
   reducers: {
     loginStart: (state) => {
       state.loading = true;
-      state.error = null;
     },
     loginSuccess: (state, action: PayloadAction<User>) => {
       state.loading = false;
       state.user = action.payload;
       state.isAuthenticated = true;
-      state.error = null;
       saveUserToLocalStorage(action.payload);
     },
-    loginFailure: (state, action: PayloadAction<string>) => {
+    loginFailure: (state) => {
       state.loading = false;
-      state.error = action.payload;
       state.isAuthenticated = false;
     },
 
     signupStart: (state) => {
       state.loading = true;
-      state.error = null;
     },
     signupSuccess: (state, action: PayloadAction<User>) => {
       state.loading = false;
       state.user = action.payload;
       state.isAuthenticated = false;
-      state.error = null;
       saveUserToLocalStorage(action.payload);
     },
-    signupFailure: (state, action: PayloadAction<string>) => {
+    signupFailure: (state) => {
       state.loading = false;
-      state.error = action.payload;
     },
 
     forgotPasswordStart: (state) => {
       state.loading = true;
-      state.error = null;
       state.forgotEmail = null;
     },
     forgotPasswordSuccess: (state, action: PayloadAction<string>) => {
       state.loading = false;
       state.forgotEmail = action.payload;
-      state.error = null;
     },
-    forgotPasswordFailure: (state, action: PayloadAction<string>) => {
+    forgotPasswordFailure: (state) => {
       state.loading = false;
-      state.error = action.payload;
     },
 
     resetPasswordStart: (state) => {
       state.loading = true;
-      state.error = null;
     },
     resetPasswordSuccess: (state, action: PayloadAction<string>) => {
       state.loading = false;
-      state.error = null;
       
       if (state.user) {
         state.user.password = action.payload;
@@ -135,15 +122,13 @@ export const authSlice = createSlice({
 
       state.forgotEmail = null;
     },
-    resetPasswordFailure: (state, action: PayloadAction<string>) => {
+    resetPasswordFailure: (state) => {
       state.loading = false;
-      state.error = action.payload;
     },
 
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
-      state.error = null;
       state.forgotEmail = null;
     },
 

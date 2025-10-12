@@ -6,7 +6,6 @@ export const useAuthStore = () => {
     user: null,
     isAuthenticated: false,
     loading: false,
-    error: null,
     forgotEmail: null,
     isInitialized: false,
   });

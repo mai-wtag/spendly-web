@@ -26,14 +26,12 @@ interface AuthFormBuilderProps {
   fields: FormField[];
   submitButtonLabel: string;
   onSubmit: (formValues: Record<string, string>) => void;
-  error?: string;
 }
 
 const AuthFormBuilder: React.FC<AuthFormBuilderProps> = ({
   fields,
   submitButtonLabel,
   onSubmit,
-  error,
 }) => {
   const schema = generateSchema(fields);
 
@@ -69,7 +67,6 @@ const AuthFormBuilder: React.FC<AuthFormBuilderProps> = ({
         />
       ))}
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
       <Button type="submit" text={submitButtonLabel} fullWidth/>
     </form>
   );

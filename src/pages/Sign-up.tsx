@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import toast from "react-hot-toast";
 import type { RootState, AppDispatch } from "reduxToolkit/store";
 import { signup } from "reduxToolkit/auth/authActions";
 import { ROUTES } from "routes/paths";
@@ -12,7 +11,7 @@ import AuthLayout from "components/auth/AuthLayout";
 const Signup: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { user, loading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { user, loading, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const prevLoadingRef = useRef(loading);
 
   const formConfig: AuthFormConfig = {
@@ -68,24 +67,16 @@ const Signup: React.FC = () => {
     dispatch(signup(values.fullName, values.email, values.password));
   };
 
-  
+
   useEffect(() => {
-    
-    if (prevLoadingRef.current && !loading) {
-      if (error) {
-       
-        toast.error(error);
-      } else if (user && !isAuthenticated) {
-        
-        toast.success("Account created successfully! Please login to continue.");
-        setTimeout(() => {
-          navigate(ROUTES.LOGIN, { replace: true });
-        }, 1000);
-      }
+    if (prevLoadingRef.current && !loading && user && !isAuthenticated) {
+      setTimeout(() => {
+        navigate(ROUTES.LOGIN, { replace: true });
+      }, 1000);
     }
     
     prevLoadingRef.current = loading;
-  }, [loading, user, error, isAuthenticated, navigate]);
+  }, [loading, user, isAuthenticated, navigate]);
 
   return (
     <AuthLayout
@@ -99,7 +90,6 @@ const Signup: React.FC = () => {
         fields={formConfig.fields}
         submitButtonLabel={loading ? "Creating..." : formConfig.submitButtonLabel}
         onSubmit={handleSubmit}
-        error={error || undefined}
       />
     </AuthLayout>
   );

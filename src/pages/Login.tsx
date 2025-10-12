@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
 import type { RootState, AppDispatch } from "reduxToolkit/store";
 import { login } from "reduxToolkit/auth/authActions";
 import { useLocalStorageStore } from "hooks/useLocalStorageStore";
@@ -13,7 +12,7 @@ import AuthLayout from "components/auth/AuthLayout";
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { isAuthenticated, loading, error, user } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading, user } = useSelector((state: RootState) => state.auth);
   const prevLoadingRef = useRef(loading);
   const [authStorage] = useLocalStorageStore<{ isAuthenticated: boolean } | null>("auth", null);
 
@@ -55,20 +54,12 @@ const Login: React.FC = () => {
     dispatch(login(values.email, values.password));
   };
 
-  
+ 
   useEffect(() => {
-  
-    if (prevLoadingRef.current && !loading) {
-      if (error) {
-        
-        toast.error(error);
-      } else if (isAuthenticated && user) {
-        
-        toast.success(`Welcome back, ${user.fullName || user.email}!`);
-        setTimeout(() => {
-          navigate(ROUTES.DASHBOARD, { replace: true });
-        }, 500);
-      }
+    if (prevLoadingRef.current && !loading && isAuthenticated && user) {
+      setTimeout(() => {
+        navigate(ROUTES.DASHBOARD, { replace: true });
+      }, 500);
     }
     
     if (!loading && authStorage?.isAuthenticated && !isAuthenticated) {
@@ -76,7 +67,7 @@ const Login: React.FC = () => {
     }
     
     prevLoadingRef.current = loading;
-  }, [isAuthenticated, loading, error, user, authStorage, navigate]);
+  }, [isAuthenticated, loading, user, authStorage, navigate]);
 
   return (
     <AuthLayout
@@ -90,7 +81,6 @@ const Login: React.FC = () => {
         fields={formConfig.fields}
         submitButtonLabel={loading ? "Logging in..." : formConfig.submitButtonLabel}
         onSubmit={handleSubmit}
-        error={error || undefined}
       />
       <Link
         to={ROUTES.FORGOT_PASSWORD}

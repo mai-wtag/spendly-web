@@ -12,7 +12,7 @@ import AuthLayout from "components/auth/AuthLayout";
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, forgotEmail } = useSelector((state: RootState) => state.auth);
+  const { loading, forgotEmail } = useSelector((state: RootState) => state.auth);
   const prevLoadingRef = useRef(loading);
   const hasShownErrorRef = useRef(false);
 
@@ -51,9 +51,7 @@ const ResetPassword: React.FC = () => {
     dispatch(resetPassword(values.password));
   };
 
-  
   useEffect(() => {
-    
     if (!forgotEmail && !hasShownErrorRef.current) {
       toast.error("Please verify your email first");
       hasShownErrorRef.current = true;
@@ -61,22 +59,14 @@ const ResetPassword: React.FC = () => {
       return;
     }
 
-    
-    if (prevLoadingRef.current && !loading) {
-      if (error) {
-        
-        toast.error(error);
-      } else if (!forgotEmail) {
-       
-        toast.success("Password updated successfully! Please login with your new password.");
-        setTimeout(() => {
-          navigate(ROUTES.LOGIN, { replace: true });
-        }, 1000);
-      }
+    if (prevLoadingRef.current && !loading && !forgotEmail) {
+      setTimeout(() => {
+        navigate(ROUTES.LOGIN, { replace: true });
+      }, 1000);
     }
     
     prevLoadingRef.current = loading;
-  }, [loading, error, forgotEmail, navigate]);
+  }, [loading, forgotEmail, navigate]);
 
   return (
     <AuthLayout
@@ -90,7 +80,6 @@ const ResetPassword: React.FC = () => {
         fields={formConfig.fields}
         submitButtonLabel={loading ? "Updating..." : formConfig.submitButtonLabel}
         onSubmit={handleSubmit}
-        error={error || undefined}
       />
     </AuthLayout>
   );
