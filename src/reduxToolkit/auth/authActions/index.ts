@@ -82,7 +82,6 @@ export const signup =
       users.push(newUser);
       saveUsersToLocalStorage(users);
       dispatch(signupSuccess(newUser));
-      setToStorage("auth", { isAuthenticated: true, user: newUser });
       toast.success("Account created successfully! Please login to continue.");
     }, 500);
   };
