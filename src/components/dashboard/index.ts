@@ -7,7 +7,10 @@ export { default as PageHeader } from "components/dashboard/common/PageHeader";
 export { default as PlaceholderContent } from "components/dashboard/common/PlaceholderContent";
 
 export { default as Card } from "components/dashboard/widgets/Card";
+export { default as StatCard } from "components/dashboard/widgets/StatCard";
 export { default as QuickActions } from "components/dashboard/widgets/QuickActions";
-export { default as RecentTransactions } from "components/dashboard/widgets/RecentTransactions";
+export { default as TransactionList } from "components/dashboard/widgets/TransactionList";
+export { default as CashFlowChart } from "components/dashboard/widgets/CashFlowChart";
+export { default as GoalCard } from "components/dashboard/widgets/GoalCard";
 
-export type { Transaction } from "components/dashboard/widgets/RecentTransactions";
+export { default as RecentTransactions } from "components/dashboard/widgets/RecentTransactions";

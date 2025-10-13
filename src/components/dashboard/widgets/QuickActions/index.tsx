@@ -6,12 +6,24 @@ import { ROUTES } from "routes/paths";
 const QuickActions: React.FC = () => {
   const navigate = useNavigate();
 
+  const handleAddTransaction = () => {
+    navigate(ROUTES.TRANSACTIONS);
+  };
+
+  const handleSetGoal = () => {
+    navigate(ROUTES.BUDGET_GOALS);
+  };
+
+  const handleViewReports = () => {
+    navigate(ROUTES.REPORTS);
+  };
+
   return (
     <div className="flex flex-col gap-3">
       <Button
         variant="primary"
         size="md"
-        onClick={() => navigate(ROUTES.TRANSACTIONS)}
+        onClick={handleAddTransaction}
         text="Add Transaction"
         icon={<PlusCircle size={18} />}
         iconPosition="left"
@@ -20,7 +32,7 @@ const QuickActions: React.FC = () => {
       <Button
         variant="secondary"
         size="md"
-        onClick={() => navigate(ROUTES.BUDGET_GOALS)}
+        onClick={handleSetGoal}
         text="Set Goal"
         icon={<Trophy size={18} />}
         iconPosition="left"
@@ -29,7 +41,7 @@ const QuickActions: React.FC = () => {
       <Button
         variant="outline"
         size="md"
-        onClick={() => navigate(ROUTES.REPORTS)}
+        onClick={handleViewReports}
         text="View Reports"
         icon={<BarChart3 size={18} />}
         iconPosition="left"
