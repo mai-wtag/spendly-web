@@ -1,4 +1,4 @@
-import { Navigate } from "react-router";
+import { Navigate, Outlet } from "react-router";
 import { useSelector } from "react-redux";
 import type { RootState } from "reduxToolkit/store";
 import { ROUTES } from "routes/paths";
@@ -9,8 +9,11 @@ const PrivateRoute: React.FC = () => {
 
   if (!isInitialized) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <span className="text-gray-600 text-lg">Loading...</span>
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-400 mx-auto mb-4"></div>
+          <span className="text-gray-600 text-lg">Loading...</span>
+        </div>
       </div>
     );
   }
@@ -19,7 +22,11 @@ const PrivateRoute: React.FC = () => {
     return <Navigate to={ROUTES.LOGIN} replace />;
   }
 
-  return <AppLayout />;
+  return (
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
+  );
 };
 
 export default PrivateRoute;

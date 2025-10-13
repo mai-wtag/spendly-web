@@ -54,3 +54,4 @@ export const generateSchema = (fields: FormField[]) => {
 
   return zodSchema;
 };
+
