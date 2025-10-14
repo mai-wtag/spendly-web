@@ -5,9 +5,13 @@ export function useLocalStorageStore<T>(key: string, initialValue: T) {
   const snapshotCache = useRef<T>(getInitialValue());
 
   function getInitialValue(): T {
-    if (typeof window === "undefined") return initialValue;
+    if (typeof window === "undefined") {
+      return initialValue;
+    }
+
     try {
       const stored = localStorage.getItem(key);
+
       return stored ? JSON.parse(stored) : initialValue;
     } catch {
       return initialValue;
@@ -26,7 +30,9 @@ export function useLocalStorageStore<T>(key: string, initialValue: T) {
               snapshotCache.current = newValue;
               callback();
             }
-          } catch {}
+          } catch (error) {
+            alert(`Error handling storage event: ${error instanceof Error ? error.message : String(error)}`);
+          }
         }
       };
 
@@ -41,7 +47,9 @@ export function useLocalStorageStore<T>(key: string, initialValue: T) {
               snapshotCache.current = newValue;
               callback();
             }
-          } catch {}
+          } catch (error) {
+            alert(`Error handling custom storage event: ${error instanceof Error ? error.message : String(error)}`);
+          }
         }
       };
 
@@ -90,8 +98,8 @@ export function useLocalStorageStore<T>(key: string, initialValue: T) {
             })
           );
         }
-      } catch (err) {
-        toast.error(`Error clearing store: ${String(err)}`);
+      } catch (error) {
+        toast.error(`Error clearing store: ${String(error)}`);
       }
     },
     [key]
@@ -115,8 +123,8 @@ export function useLocalStorageStore<T>(key: string, initialValue: T) {
           url: window.location.href,
         })
       );
-    } catch (err) {
-      toast.error(`Error clearing store: ${String(err)}`);
+    } catch (error) {
+      toast.error(`Error clearing store: ${String(error)}`);
     }
   }, [key, initialValue]);
 

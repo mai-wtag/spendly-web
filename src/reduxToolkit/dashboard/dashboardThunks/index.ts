@@ -11,45 +11,37 @@ import {
   setLoading,
   setError,
 } from "reduxToolkit/dashboard/dashboardSlice";
-import type { AddTransactionPayload, AddGoalPayload, Transaction, Goal } from "utils/types/dashboard.types";
+import type { AddTransactionPayload, AddGoalPayload } from "utils/dashboardTypes";
+import {
+  loadTransactionsFromStorage,
+  loadGoalsFromStorage,
+  saveTransactionsToStorage,
+  saveGoalsToStorage,
+} from "reduxToolkit/dashboard/helpers/localStorage";
 
 export const loadTransactions = (): AppThunk => (dispatch) => {
   try {
-    const stored = localStorage.getItem("transactions");
-    if (stored) {
-      const transactions: Transaction[] = JSON.parse(stored);
+    const transactions = loadTransactionsFromStorage();
+    if (transactions) {
       dispatch(setTransactions(transactions));
     }
   } catch (error) {
-    console.error("Failed to load transactions:", error);
+    toast.error(
+      `Failed to load transactions: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 };
 
 export const loadGoals = (): AppThunk => (dispatch) => {
   try {
-    const stored = localStorage.getItem("goals");
-    if (stored) {
-      const goals: Goal[] = JSON.parse(stored);
+    const goals = loadGoalsFromStorage();
+    if (goals) {
       dispatch(setGoals(goals));
     }
   } catch (error) {
-    console.error("Failed to load goals:", error);
-  }
-};
-
-const saveTransactionsToStorage = (transactions: Transaction[]) => {
-  try {
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-  } catch (error) {
-    console.error("Failed to save transactions:", error);
-  }
-};
-
-const saveGoalsToStorage = (goals: Goal[]) => {
-  try {
-    localStorage.setItem("goals", JSON.stringify(goals));
-  } catch (error) {
-    console.error("Failed to save goals:", error);
+    toast.error(
+      `Failed to load goals: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 };
 
@@ -58,13 +50,13 @@ export const addTransaction =
   (dispatch, getState) => {
     try {
       dispatch(setLoading(true));
-      
+
       setTimeout(() => {
         dispatch(addTransactionAction(payload));
-        
+
         const state = getState();
         saveTransactionsToStorage(state.dashboard.transactions);
-        
+
         dispatch(setLoading(false));
         toast.success(
           `${payload.type === "income" ? "Income" : "Expense"} of $${payload.amount.toFixed(2)} added successfully!`
@@ -73,7 +65,9 @@ export const addTransaction =
     } catch (error) {
       dispatch(setError("Failed to add transaction"));
       dispatch(setLoading(false));
-      toast.error("Failed to add transaction");
+      toast.error(
+        `Failed to add transaction: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   };
 
@@ -82,13 +76,15 @@ export const deleteTransaction =
   (dispatch, getState) => {
     try {
       dispatch(deleteTransactionAction(id));
-      
+
       const state = getState();
       saveTransactionsToStorage(state.dashboard.transactions);
-      
+
       toast.success("Transaction deleted successfully!");
     } catch (error) {
-      toast.error("Failed to delete transaction");
+      toast.error(
+        `Failed to delete transaction: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   };
 
@@ -97,20 +93,22 @@ export const addGoal =
   (dispatch, getState) => {
     try {
       dispatch(setLoading(true));
-      
+
       setTimeout(() => {
         dispatch(addGoalAction(payload));
-        
+
         const state = getState();
         saveGoalsToStorage(state.dashboard.goals);
-        
+
         dispatch(setLoading(false));
         toast.success(`Goal "${payload.title}" created successfully!`);
       }, 300);
     } catch (error) {
       dispatch(setError("Failed to add goal"));
       dispatch(setLoading(false));
-      toast.error("Failed to create goal");
+      toast.error(
+        `Failed to create goal: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   };
 
@@ -119,13 +117,15 @@ export const updateGoalProgress =
   (dispatch, getState) => {
     try {
       dispatch(updateGoalProgressAction({ id, amount }));
-      
+
       const state = getState();
       saveGoalsToStorage(state.dashboard.goals);
-      
+
       toast.success(`Goal progress updated by $${amount.toFixed(2)}!`);
     } catch (error) {
-      toast.error("Failed to update goal progress");
+      toast.error(
+        `Failed to update goal progress: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   };
 
@@ -134,12 +134,14 @@ export const deleteGoal =
   (dispatch, getState) => {
     try {
       dispatch(deleteGoalAction(id));
-      
+
       const state = getState();
       saveGoalsToStorage(state.dashboard.goals);
-      
+
       toast.success("Goal deleted successfully!");
     } catch (error) {
-      toast.error("Failed to delete goal");
+      toast.error(
+        `Failed to delete goal: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   };

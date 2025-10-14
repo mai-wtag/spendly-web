@@ -5,7 +5,7 @@ import type { RootState, AppDispatch } from "reduxToolkit/store";
 import { login } from "reduxToolkit/auth/authActions";
 import { useLocalStorageStore } from "hooks/useLocalStorageStore";
 import { ROUTES } from "routes/paths";
-import type { AuthFormConfig } from "utils/types";
+import type { AuthFormConfig } from "utils/formTypes";
 import AuthFormBuilder from "components/auth/AuthFormBuilder";
 import AuthLayout from "components/auth/AuthLayout";
 

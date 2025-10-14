@@ -1,14 +1,11 @@
-import type { Middleware, AnyAction } from "@reduxjs/toolkit";
+import type { Middleware } from "@reduxjs/toolkit";
+import { isReduxAction } from "utils/typeGuards";
 
 export const localStorageSyncMiddleware: Middleware = 
   (storeAPI) => (next) => (action) => {
     const result = next(action);
-    
-    const isAction = (a: unknown): a is AnyAction => {
-      return typeof a === 'object' && a !== null && 'type' in a && typeof (a as any).type === 'string';
-    };
 
-    if (!isAction(action)) {
+    if (!isReduxAction(action)) {
       return result;
     }
     
@@ -44,10 +41,9 @@ export const localStorageSyncMiddleware: Middleware =
           );
         }
       } catch (error) {
-        console.error("Error syncing to localStorage:", error);
+        alert(`${error instanceof Error ? error.message : String(error)}`);
       }
     }
     
     return result;
   };
-  

@@ -1,84 +1,59 @@
 import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from "reduxToolkit/store";
+import type { Transaction, Goal, FinancialStats, CashFlowData } from "utils/dashboardTypes";
 
-export const selectDashboardState = (state: RootState) => state.dashboard;
+export const selectDashboard = (state: RootState) => state.dashboard;
 
-export const selectStats = (state: RootState) => state.dashboard.stats;
+export const selectTransactions = (state: RootState): Transaction[] => 
+  state.dashboard.transactions;
 
-export const selectTransactions = (state: RootState) => state.dashboard.transactions;
+export const selectGoals = (state: RootState): Goal[] => 
+  state.dashboard.goals;
 
-export const selectGoals = (state: RootState) => state.dashboard.goals;
+export const selectStats = (state: RootState): FinancialStats => 
+  state.dashboard.stats;
 
-export const selectCashFlow = (state: RootState) => state.dashboard.cashFlow;
+export const selectCashFlow = (state: RootState): CashFlowData[] => 
+  state.dashboard.cashFlow;
 
-export const selectLoading = (state: RootState) => state.dashboard.loading;
+export const selectLoading = (state: RootState): boolean => 
+  state.dashboard.loading;
 
-export const selectError = (state: RootState) => state.dashboard.error;
+export const selectError = (state: RootState): string | null => 
+  state.dashboard.error;
 
 export const selectRecentTransactions = createSelector(
   [selectTransactions],
-  (transactions) => transactions.slice(0, 5)
-);
-
-export const selectIncomeTransactions = createSelector(
-  [selectTransactions],
-  (transactions) => transactions.filter((t) => t.type === "income")
-);
-
-export const selectExpenseTransactions = createSelector(
-  [selectTransactions],
-  (transactions) => transactions.filter((t) => t.type === "expense")
-);
-
-export const selectTotalIncome = createSelector(
-  [selectIncomeTransactions],
-  (transactions) => transactions.reduce((sum, t) => sum + t.amount, 0)
-);
-
-export const selectTotalExpense = createSelector(
-  [selectExpenseTransactions],
-  (transactions) => transactions.reduce((sum, t) => sum + t.amount, 0)
+  (transactions): Transaction[] => transactions.slice(0, 5)
 );
 
 export const selectActiveGoals = createSelector(
   [selectGoals],
-  (goals) => goals.filter((g) => g.currentAmount < g.targetAmount)
+  (goals): Goal[] => goals.filter((goal) => goal.currentAmount < goal.targetAmount)
 );
 
 export const selectCompletedGoals = createSelector(
   [selectGoals],
-  (goals) => goals.filter((g) => g.currentAmount >= g.targetAmount)
+  (goals): Goal[] => goals.filter((goal) => goal.currentAmount >= goal.targetAmount)
 );
 
-export const selectGoalProgress = createSelector(
-  [selectGoals],
-  (goals) => goals.map((goal) => ({
-    ...goal,
-    progress: Math.round((goal.currentAmount / goal.targetAmount) * 100),
-  }))
+export const selectTotalIncome = createSelector(
+  [selectStats],
+  (stats): number => stats.monthlyIncome
 );
 
-export const selectTransactionsByCategory = createSelector(
-  [selectTransactions],
-  (transactions) => {
-    const categoryMap = new Map<string, number>();
-    transactions.forEach((t) => {
-      const current = categoryMap.get(t.category) || 0;
-      categoryMap.set(t.category, current + t.amount);
-    });
-    return Array.from(categoryMap.entries()).map(([category, amount]) => ({
-      category,
-      amount,
-    }));
+export const selectTotalExpense = createSelector(
+  [selectStats],
+  (stats): number => stats.monthlyExpense
+);
+
+export const selectSavingsRate = createSelector(
+  [selectStats],
+  (stats): number => {
+    if (stats.monthlyIncome === 0) {
+      return 0;
+    }
+
+    return (stats.monthlySavings / stats.monthlyIncome) * 100;
   }
-);
-
-export const selectDashboardSummary = createSelector(
-  [selectStats, selectTransactions, selectGoals],
-  (stats, transactions, goals) => ({
-    stats,
-    totalTransactions: transactions.length,
-    totalGoals: goals.length,
-    activeGoals: goals.filter((g) => g.currentAmount < g.targetAmount).length,
-  })
 );

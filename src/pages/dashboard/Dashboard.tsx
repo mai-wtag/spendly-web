@@ -8,7 +8,7 @@ import {
   selectCashFlow,
   selectLoading,
 } from "reduxToolkit/dashboard/dashboardSelectors";
-import { deleteTransaction, loadTransactions } from "reduxToolkit/dashboard/dashboardActions";
+import { deleteTransaction, loadTransactions } from "reduxToolkit/dashboard/dashboardThunks";
 
 import PageHeader from "components/dashboard/common/PageHeader";
 import Card from "components/dashboard/widgets/Card";
