@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { FormField, ValidationRule } from "utils/types";
 
 export const generateSchema = (fields: FormField[]) => {
-  const shape: Record<string, z.ZodType<string, any>> = {};
+  const shape: Record<string, z.ZodString> = {};
 
   fields.forEach((field) => {
     let schema: z.ZodString = z.string();
