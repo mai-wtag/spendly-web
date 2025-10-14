@@ -1,5 +1,6 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import Input from "components/base-components/Input";
 import Button from "components/base-components/Button";
 import { generateSchema } from "components/auth/utils/generateSchema";
@@ -36,17 +37,18 @@ const AuthFormBuilder: React.FC<AuthFormBuilderProps> = ({
   error,
 }) => {
   const schema = generateSchema(fields);
+  type FormData = z.infer<typeof schema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Record<string, unknown>>({
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: generateDefaultValues(fields),
+    defaultValues: generateDefaultValues(fields) as FormData,
   });
 
-  const onSubmitHandler: SubmitHandler<Record<string, unknown>> = (data) => {
+  const onSubmitHandler: SubmitHandler<FormData> = (data) => {
     const stringData: Record<string, string> = Object.fromEntries(
       Object.entries(data).map(([key, value]) => [key, String(value)])
     );
