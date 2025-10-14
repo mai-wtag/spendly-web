@@ -1,4 +1,5 @@
-import { ChartBar, Goal, LayoutDashboard, Receipt, Settings } from "lucide-react";
+import { useState } from "react";
+import { ChartBar, Goal, LayoutDashboard, Receipt, Settings, ChevronLeft, ChevronRight } from "lucide-react";
 import Logo from "assets/Logo";
 import SidebarItem from "components/dashboard/layout/SidebarItem";
 import { ROUTES } from "routes/paths";
@@ -40,11 +41,21 @@ const navigationItems: NavItem[] = [
 ];
 
 const Sidebar: React.FC = () => {
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsMinimized(!isMinimized);
+  };
+
   return (
-    <aside className="w-64 flex-shrink-0 bg-white border-r border-gray-200 p-6">
-      <div className="flex items-center gap-3 mb-8">
+    <aside
+      className={`flex-shrink-0 bg-white border-r border-gray-200 p-6 transition-all duration-300 relative ${
+        isMinimized ? "w-20" : "w-64"
+      }`}
+    >
+      <div className={`flex items-center gap-3 mb-8 ${isMinimized ? "justify-center" : ""}`}>
         <Logo />
-        <h1 className="text-xl font-bold text-gray-800">Spendly</h1>
+        {!isMinimized && <h1 className="text-xl font-bold text-gray-800">Spendly</h1>}
       </div>
 
       <nav className="flex flex-col gap-2">
@@ -55,9 +66,18 @@ const Sidebar: React.FC = () => {
             icon={item.icon}
             label={item.label}
             end={item.end}
+            isMinimized={isMinimized}
           />
         ))}
       </nav>
+
+      <button
+        onClick={toggleSidebar}
+        className="absolute -right-3 top-8 w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow text-gray-600 hover:text-teal-600"
+        aria-label={isMinimized ? "Expand sidebar" : "Minimize sidebar"}
+      >
+        {isMinimized ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+      </button>
     </aside>
   );
 };
