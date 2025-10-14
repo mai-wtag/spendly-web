@@ -7,6 +7,7 @@ import { loadUser } from "reduxToolkit/auth/authSlice";
 import { useLocalStorageStore } from "hooks/useLocalStorageStore";
 import { ROUTES } from "routes/paths";
 import RouteComponent from "routes";
+import type { AuthStorage } from "utils/user";
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,7 +15,7 @@ const App: React.FC = () => {
   const location = useLocation();
   const { isInitialized, isAuthenticated } = useSelector((state: RootState) => state.auth);
   
-  const [authStorage] = useLocalStorageStore<{ isAuthenticated: boolean; user: any } | null>("auth", null);
+  const [authStorage] = useLocalStorageStore<AuthStorage | null>("auth", null);
   const [loggedOut] = useLocalStorageStore<string | null>("loggedOut", null);
 
   useEffect(() => {

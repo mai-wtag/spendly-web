@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "reduxToolkit/store";
 import { forgotPassword } from "reduxToolkit/auth/authActions";
 import { ROUTES } from "routes/paths";
-import type { AuthFormConfig } from "utils/types";
+import type { AuthFormConfig } from "utils/formTypes";
 import AuthFormBuilder from "components/auth/AuthFormBuilder";
 import AuthLayout from "components/auth/AuthLayout";
 
@@ -40,9 +40,7 @@ const ForgotPassword: React.FC = () => {
 
   useEffect(() => {
     if (prevLoadingRef.current && !loading && forgotEmail) {
-      setTimeout(() => {
-        navigate(ROUTES.RESET_PASSWORD, { replace: true });
-      }, 800);
+      navigate(ROUTES.RESET_PASSWORD, { replace: true });
     }
     
     prevLoadingRef.current = loading;
