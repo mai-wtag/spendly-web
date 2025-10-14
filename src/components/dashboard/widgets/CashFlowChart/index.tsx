@@ -1,5 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import type { CashFlowData } from "utils/types/dashboard.types";
+import type { CashFlowData } from "utils/dashboardTypes";
 
 interface CashFlowChartProps {
   data: CashFlowData[];

@@ -1,5 +1,5 @@
 import { Target, TrendingUp } from "lucide-react";
-import type { Goal } from "utils/types/dashboard.types";
+import type { Goal } from "utils/dashboardTypes";
 
 interface GoalCardProps {
   goal: Goal;

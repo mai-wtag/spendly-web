@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "reduxToolkit/store";
 import { useLocalStorageStore } from "hooks/useLocalStorageStore";
 import { setTransactions, setGoals } from "reduxToolkit/dashboard/dashboardSlice";
-import type { Transaction, Goal } from "utils/types/dashboard.types";
+import type { Transaction, Goal } from "utils/dashboardTypes";
 
 export const useDashboardSync = () => {
   const dispatch = useDispatch<AppDispatch>();

@@ -1,5 +1,5 @@
 import { ArrowDownCircle, ArrowUpCircle, Trash2 } from "lucide-react";
-import type { Transaction } from "utils/types/dashboard.types";
+import type { Transaction } from "utils/dashboardTypes";
 
 interface TransactionListProps {
   transactions: Transaction[];

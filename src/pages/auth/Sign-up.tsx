@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import type { RootState, AppDispatch } from "reduxToolkit/store";
 import { signup } from "reduxToolkit/auth/authActions";
 import { ROUTES } from "routes/paths";
-import type { AuthFormConfig } from "utils/types";
+import type { AuthFormConfig } from "utils/formTypes";
 import AuthFormBuilder from "components/auth/AuthFormBuilder";
 import AuthLayout from "components/auth/AuthLayout";
 

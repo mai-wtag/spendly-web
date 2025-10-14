@@ -4,7 +4,7 @@ export interface ValidationRule {
   message?: string; 
 }
 
-export interface FormField {
+export interface FormField<T = HTMLInputElement | HTMLSelectElement> {
   id: string;
   name: string;
   type?: "text" | "email" | "password" | "select" | "checkbox" | "radio" | "custom";
@@ -12,9 +12,15 @@ export interface FormField {
   required?: boolean;
   value?: string;
   options?: { label: string; value: string }[];
-  component?: React.FC<any>; 
-  onChange?: (e: React.ChangeEvent<any>) => void;
+  component?: React.ComponentType<FormFieldProps>;
+  onChange?: (e: React.ChangeEvent<T>) => void;
   validations?: ValidationRule[];
+}
+
+export interface FormFieldProps {
+  field: FormField;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
 export interface AuthFormConfig {
