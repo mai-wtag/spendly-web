@@ -22,8 +22,13 @@ const TransactionList: React.FC<TransactionListProps> = ({
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    if (date.toDateString() === today.toDateString()) return "Today";
-    if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+    if (date.toDateString() === today.toDateString()) {
+       return "Today";
+    }
+
+    if (date.toDateString() === yesterday.toDateString()) {
+      return "Yesterday";
+    }
 
     return date.toLocaleDateString("en-US", { 
       month: "short", 
@@ -60,17 +65,11 @@ const TransactionList: React.FC<TransactionListProps> = ({
 
   return (
     <div className="overflow-x-auto">
-      <div className="grid grid-cols-3 gap-4 px-4 py-3 bg-gray-50 rounded-t-lg border-b border-gray-200">
-        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
-          Activity
-        </div>
-        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider text-center">
-          Date
-        </div>
-        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">
-          Amount
-        </div>
-      </div>
+      <div className="flex gap-4 px-4 py-3 bg-gray-50 rounded-t-lg border-b border-gray-200 text-xs font-semibold text-gray-600 uppercase tracking-wider justify-between">  
+          <span>Activity</span>  
+          <span>Date</span>  
+          <span>Amount</span>  
+      </div>  
 
       <div className="divide-y divide-gray-100">
         {displayTransactions.map((transaction) => (

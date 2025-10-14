@@ -49,7 +49,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside
-      className={`flex-shrink-0 h-full bg-white border-r border-gray-200 p-6 transition-all duration-300 relative ${
+      className={`hidden md:block flex-shrink-0 bg-white border-r border-gray-200 p-6 transition-all duration-300 relative ${
         isMinimized ? "w-20" : "w-64"
       }`}
     >

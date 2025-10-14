@@ -9,9 +9,7 @@ interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <div className="hidden md:block">
         <Sidebar />
-      </div>
 
       <main className="flex-1 flex flex-col min-w-0">
         <Topbar />
