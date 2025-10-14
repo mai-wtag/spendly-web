@@ -18,6 +18,7 @@ import {
 const getFromStorage = <T,>(key: string, fallback: T): T => {
   try {
     const stored = localStorage.getItem(key);
+
     return stored ? (JSON.parse(stored) as T) : fallback;
   } catch {
     return fallback;
@@ -28,8 +29,8 @@ const setToStorage = <T,>(key: string, value: T) => {
   try {
     localStorage.setItem(key, JSON.stringify(value));
     window.dispatchEvent(new Event("storage"));
-  } catch (err) {
-    console.error(`Error writing ${key} to localStorage`, err);
+  } catch (error) {
+    alert(`${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -75,6 +76,7 @@ export const signup =
       if (exists) {
         dispatch(signupFailure());
         toast.error("User already exists");
+
         return;
       }
 
@@ -114,6 +116,7 @@ export const resetPassword =
       if (!forgotEmail) {
         dispatch(resetPasswordFailure());
         toast.error("Invalid flow, no email found");
+
         return;
       }
 
@@ -123,6 +126,7 @@ export const resetPassword =
       if (index === -1) {
         dispatch(resetPasswordFailure());
         toast.error("No matching user found");
+        
         return;
       }
 

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import type { RootState, AppDispatch } from "reduxToolkit/store";
 import { resetPassword } from "reduxToolkit/auth/authActions";
 import { ROUTES } from "routes/paths";
-import type { AuthFormConfig } from "utils/types";
+import type { AuthFormConfig } from "utils/formTypes";
 import AuthFormBuilder from "components/auth/AuthFormBuilder";
 import AuthLayout from "components/auth/AuthLayout";
 
@@ -56,6 +56,7 @@ const ResetPassword: React.FC = () => {
       toast.error("Please verify your email first");
       hasShownErrorRef.current = true;
       navigate(ROUTES.FORGOT_PASSWORD, { replace: true });
+
       return;
     }
 
