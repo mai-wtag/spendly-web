@@ -57,3 +57,5 @@ export const selectSavingsRate = createSelector(
     return (stats.monthlySavings / stats.monthlyIncome) * 100;
   }
 );
+
+export const selectBudgets = (state: RootState) => state.dashboard.budgets;

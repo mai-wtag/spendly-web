@@ -34,6 +34,7 @@ export interface DashboardState {
   stats: FinancialStats;
   transactions: Transaction[];
   goals: Goal[];
+  budgets: Budget[];
   cashFlow: CashFlowData[];
   loading: boolean;
   error: string | null;
@@ -53,4 +54,15 @@ export interface AddGoalPayload {
   targetAmount: number;
   deadline: string;
   category: string;
+}
+
+export interface Budget {
+  id: string;
+  category: string;
+  limit: number;
+}
+
+export interface AddBudgetPayload {
+  category: string;
+  limit: number;
 }

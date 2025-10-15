@@ -23,6 +23,15 @@ export const TRANSACTION_CATEGORIES = {
   ],
 } as const;
 
+export const GOAL_CATEGORIES = [
+  "Savings",
+  "Electronics",
+  "Travel",
+  "Housing",
+  "Vehicle",
+  "Other",
+] as const;
+
 export type IncomeCategory = typeof TRANSACTION_CATEGORIES.income[number];
 export type ExpenseCategory = typeof TRANSACTION_CATEGORIES.expense[number];
 export type TransactionCategory = IncomeCategory | ExpenseCategory;
