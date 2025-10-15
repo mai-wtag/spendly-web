@@ -1,7 +1,9 @@
 import toast from "react-hot-toast";
 import type { AppThunk } from "reduxToolkit/store";
+import type { Transaction } from "utils/dashboardTypes";
 import {
   addTransaction as addTransactionAction,
+  updateTransaction as updateTransactionAction,
   addGoal as addGoalAction,
   deleteTransaction as deleteTransactionAction,
   deleteGoal as deleteGoalAction,
@@ -145,3 +147,21 @@ export const deleteGoal =
       );
     }
   };
+
+export const updateTransaction =
+  (transaction: Transaction): AppThunk =>
+  (dispatch, getState) => {
+    try {
+      dispatch(updateTransactionAction(transaction));
+
+      const state = getState();
+      saveTransactionsToStorage(state.dashboard.transactions);
+
+      toast.success("Transaction updated successfully!");
+    } catch (error) {
+      toast.error(
+        `Failed to update transaction: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  };
+
