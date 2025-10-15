@@ -25,16 +25,19 @@ const AddTransactionForm: React.FC = () => {
 
     if (!amount || parseFloat(amount) <= 0) {
       toast.error("Please enter a valid amount");
+
       return;
     }
 
     if (!category) {
       toast.error("Please select a category");
+
       return;
     }
 
     if (!description.trim()) {
       toast.error("Please add a description");
+      
       return;
     }
 

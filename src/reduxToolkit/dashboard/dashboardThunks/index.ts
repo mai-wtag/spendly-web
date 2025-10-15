@@ -24,6 +24,7 @@ import {
 export const loadTransactions = (): AppThunk => (dispatch) => {
   try {
     const transactions = loadTransactionsFromStorage();
+    
     if (transactions) {
       dispatch(setTransactions(transactions));
     }
@@ -37,6 +38,7 @@ export const loadTransactions = (): AppThunk => (dispatch) => {
 export const loadGoals = (): AppThunk => (dispatch) => {
   try {
     const goals = loadGoalsFromStorage();
+
     if (goals) {
       dispatch(setGoals(goals));
     }
@@ -164,4 +166,3 @@ export const updateTransaction =
       );
     }
   };
-
