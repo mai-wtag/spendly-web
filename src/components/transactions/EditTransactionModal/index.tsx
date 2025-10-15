@@ -1,12 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { X, Save } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
-import type { AppDispatch } from "reduxToolkit/store";
-import { updateTransaction } from "reduxToolkit/dashboard/dashboardThunks";
-import { selectLoading } from "reduxToolkit/dashboard/dashboardSelectors";
 import { TRANSACTION_CATEGORIES } from "utils/constants/categories";
 import type { Transaction } from "utils/dashboardTypes";
+import { useEditTransactionForm } from "components/transactions/EditTransactionModal/useEditTransactionForm";
 
 interface EditTransactionModalProps {
   transaction: Transaction;
@@ -17,53 +13,24 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
   transaction,
   onClose,
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const loading = useSelector(selectLoading);
-
-  const [amount, setAmount] = useState(transaction.amount.toString());
-  const [category, setCategory] = useState(transaction.category);
-  const [date, setDate] = useState(transaction.date);
-  const [description, setDescription] = useState(transaction.description);
+  const {
+    amount,
+    setAmount,
+    category,
+    setCategory,
+    date,
+    setDate,
+    description,
+    setDescription,
+    loading,
+    handleSubmit,
+  } = useEditTransactionForm(transaction, onClose);
 
   const categories = TRANSACTION_CATEGORIES[transaction.type];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!amount || parseFloat(amount) <= 0) {
-      toast.error("Please enter a valid amount");
-
-      return;
-    }
-
-    if (!category) {
-      toast.error("Please select a category");
-
-      return;
-    }
-
-    if (!description.trim()) {
-      toast.error("Please add a description");
-
-      return;
-    }
-
-    dispatch(
-      updateTransaction({
-        ...transaction,
-        amount: parseFloat(amount),
-        category,
-        date,
-        description: description.trim(),
-      })
-    );
-
-    onClose();
-  };
-
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    
+
     return () => {
       document.body.style.overflow = "unset";
     };

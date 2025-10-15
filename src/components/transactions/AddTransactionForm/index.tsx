@@ -1,97 +1,36 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { PlusCircle, MinusCircle, Plus } from "lucide-react";
-import toast from "react-hot-toast";
-import type { AppDispatch } from "reduxToolkit/store";
-import { addTransaction } from "reduxToolkit/dashboard/dashboardThunks";
-import { selectLoading } from "reduxToolkit/dashboard/dashboardSelectors";
+import { Plus } from "lucide-react";
 import { TRANSACTION_CATEGORIES } from "utils/constants/categories";
-import type { TransactionType } from "utils/dashboardTypes";
+import TransactionTypeToggle from "components/transactions/AddTransactionForm/TransactionTypeToggle";
+import { useTransactionForm } from "components/transactions/AddTransactionForm/useTransactionForm";
 
 const AddTransactionForm: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const loading = useSelector(selectLoading);
-
-  const [type, setType] = useState<TransactionType>("expense");
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [description, setDescription] = useState("");
+  const {
+    type,
+    setType,
+    amount,
+    setAmount,
+    category,
+    setCategory,
+    date,
+    setDate,
+    description,
+    setDescription,
+    loading,
+    handleSubmit,
+  } = useTransactionForm();
 
   const categories = TRANSACTION_CATEGORIES[type];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!amount || parseFloat(amount) <= 0) {
-      toast.error("Please enter a valid amount");
-
-      return;
-    }
-
-    if (!category) {
-      toast.error("Please select a category");
-
-      return;
-    }
-
-    if (!description.trim()) {
-      toast.error("Please add a description");
-      
-      return;
-    }
-
-    dispatch(
-      addTransaction({
-        description: description.trim(),
-        amount: parseFloat(amount),
-        type,
-        category,
-      })
-    );
-
-    setAmount("");
+  const handleTypeChange = (newType: typeof type) => {
+    setType(newType);
     setCategory("");
-    setDescription("");
-    setDate(new Date().toISOString().split("T")[0]);
   };
 
   return (
     <aside className="w-full lg:w-96 flex-shrink-0 bg-white rounded-xl shadow-sm p-6 flex flex-col gap-6 h-fit sticky top-6">
       <h3 className="text-2xl font-bold text-gray-800">Add Transaction</h3>
 
-      <div className="flex h-12 items-center justify-center rounded-xl bg-gray-100 p-1">
-        <button
-          type="button"
-          onClick={() => {
-            setType("income");
-            setCategory("");
-          }}
-          className={`flex-1 flex items-center justify-center h-full rounded-lg font-semibold transition-all duration-200 ${
-            type === "income"
-              ? "bg-green-500 text-white shadow-sm"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-        >
-          <PlusCircle size={18} className="mr-2" />
-          Income
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setType("expense");
-            setCategory("");
-          }}
-          className={`flex-1 flex items-center justify-center h-full rounded-lg font-semibold transition-all duration-200 ${
-            type === "expense"
-              ? "bg-red-500 text-white shadow-sm"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-        >
-          <MinusCircle size={18} className="mr-2" />
-          Expense
-        </button>
-      </div>
+      <TransactionTypeToggle type={type} onChange={handleTypeChange} />
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="flex flex-col">

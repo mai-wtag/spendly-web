@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { getUserFromLocalStorage } from "reduxToolkit/auth/helpers/authStorage";
 
 export interface User {
   fullName?: string;
@@ -23,13 +24,12 @@ const initialState: AuthState = {
   isInitialized: false,
 };
 
-
 const saveUserToLocalStorage = (user: User) => {
   const usersStr = localStorage.getItem("users");
   const users: User[] = usersStr ? JSON.parse(usersStr) : [];
 
   const existingIndex = users.findIndex((u) => u.email === user.email);
-  
+
   if (existingIndex !== -1) {
     users[existingIndex] = user;
   } else {
@@ -37,26 +37,6 @@ const saveUserToLocalStorage = (user: User) => {
   }
 
   localStorage.setItem("users", JSON.stringify(users));
-};
-
-const getUserFromLocalStorage = (): User | null => {
-  try {
-    const authStr = localStorage.getItem("auth");
-    const loggedOut = localStorage.getItem("loggedOut");
-
-    if (loggedOut === "true") return null;
-
-    if (authStr) {
-      const authData = JSON.parse(authStr);
-      if (authData.isAuthenticated && authData.user) {
-        return authData.user;
-      }
-    }
-
-    return null;
-  } catch {
-    return null;
-  }
 };
 
 export const authSlice = createSlice({
@@ -107,7 +87,7 @@ export const authSlice = createSlice({
     },
     resetPasswordSuccess: (state, action: PayloadAction<string>) => {
       state.loading = false;
-      
+
       if (state.user) {
         state.user.password = action.payload;
       }
@@ -117,6 +97,7 @@ export const authSlice = createSlice({
       if (usersStr) {
         const users: User[] = JSON.parse(usersStr);
         const index = users.findIndex((u) => u.email === state.forgotEmail);
+        
         if (index !== -1) {
           users[index].password = action.payload;
           localStorage.setItem("users", JSON.stringify(users));
