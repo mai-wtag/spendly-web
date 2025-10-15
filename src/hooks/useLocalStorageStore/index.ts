@@ -38,6 +38,7 @@ export function useLocalStorageStore<T>(key: string, initialValue: T) {
 
       const handleCustom = (event: Event) => {
         const customEvent = event as CustomEvent;
+        
         if (customEvent.detail?.key === key) {
           try {
             const stored = localStorage.getItem(key);

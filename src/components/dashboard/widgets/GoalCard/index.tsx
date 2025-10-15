@@ -19,10 +19,19 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onUpdate }) => {
   };
 
   const getProgressColor = () => {
-    if (progress >= 100) return "bg-green-500";
-    if (progress >= 75) return "bg-teal-500";
-    if (progress >= 50) return "bg-blue-500";
-    if (progress >= 25) return "bg-yellow-500";
+    if (progress >= 100) {
+      return "bg-green-500";
+    }
+    if (progress >= 75) {
+      return "bg-teal-500";
+    }
+    if (progress >= 50) {
+      return "bg-blue-500";
+    }
+    if (progress >= 25) {
+      return "bg-yellow-500";
+    }
+
     return "bg-gray-400";
   };
 
