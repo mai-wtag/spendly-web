@@ -1,4 +1,4 @@
-import { getFromStorage, setToStorage } from "utils/helpers";
+import { getFromStorage, setToStorage } from "../../../../utils/helpers";
 import type { User } from "reduxToolkit/auth/authSlice";
 
 export const getUsersFromLocalStorage = () =>
