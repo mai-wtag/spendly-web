@@ -1,66 +1,14 @@
 import { useSyncExternalStore, useCallback, useRef } from "react";
 import toast from "react-hot-toast";
+import { getStorageValue, setStorageValue, dispatchStorageEvent } from "hooks/useLocalStorageStore/storageHelpers";
+import { createStorageSubscription } from "hooks/useLocalStorageStore/storageSubscription";
 
 export function useLocalStorageStore<T>(key: string, initialValue: T) {
-  const snapshotCache = useRef<T>(getInitialValue());
-
-  function getInitialValue(): T {
-    if (typeof window === "undefined") {
-      return initialValue;
-    }
-
-    try {
-      const stored = localStorage.getItem(key);
-
-      return stored ? JSON.parse(stored) : initialValue;
-    } catch {
-      return initialValue;
-    }
-  }
+  const snapshotCache = useRef<T>(getStorageValue(key, initialValue));
 
   const subscribe = useCallback(
     (callback: () => void) => {
-      const handleStorage = (event: StorageEvent) => {
-        if (event.key === key || event.key === null) {
-          try {
-            const stored = localStorage.getItem(key);
-            const newValue = stored ? JSON.parse(stored) : initialValue;
-            
-            if (JSON.stringify(newValue) !== JSON.stringify(snapshotCache.current)) {
-              snapshotCache.current = newValue;
-              callback();
-            }
-          } catch (error) {
-            alert(`Error handling storage event: ${error instanceof Error ? error.message : String(error)}`);
-          }
-        }
-      };
-
-      const handleCustom = (event: Event) => {
-        const customEvent = event as CustomEvent;
-        
-        if (customEvent.detail?.key === key) {
-          try {
-            const stored = localStorage.getItem(key);
-            const newValue = stored ? JSON.parse(stored) : initialValue;
-            
-            if (JSON.stringify(newValue) !== JSON.stringify(snapshotCache.current)) {
-              snapshotCache.current = newValue;
-              callback();
-            }
-          } catch (error) {
-            alert(`Error handling custom storage event: ${error instanceof Error ? error.message : String(error)}`);
-          }
-        }
-      };
-
-      window.addEventListener("storage", handleStorage);
-      window.addEventListener("localStorageUpdate", handleCustom);
-
-      return () => {
-        window.removeEventListener("storage", handleStorage);
-        window.removeEventListener("localStorageUpdate", handleCustom);
-      };
+      return createStorageSubscription(key, initialValue, snapshotCache, callback);
     },
     [key, initialValue]
   );
@@ -80,27 +28,19 @@ export function useLocalStorageStore<T>(key: string, initialValue: T) {
       try {
         const currentValue = snapshotCache.current;
         const newValue = value instanceof Function ? value(currentValue) : value;
-        
+
         if (JSON.stringify(newValue) !== JSON.stringify(currentValue)) {
-          localStorage.setItem(key, JSON.stringify(newValue));
+          setStorageValue(key, newValue);
           snapshotCache.current = newValue;
-          
-          window.dispatchEvent(
-            new CustomEvent("localStorageUpdate", { detail: { key } })
-          );
-          
-          window.dispatchEvent(
-            new StorageEvent("storage", {
-              key,
-              newValue: JSON.stringify(newValue),
-              oldValue: JSON.stringify(currentValue),
-              storageArea: localStorage,
-              url: window.location.href,
-            })
+
+          dispatchStorageEvent(
+            key,
+            JSON.stringify(newValue),
+            JSON.stringify(currentValue)
           );
         }
       } catch (error) {
-        toast.error(`Error clearing store: ${String(error)}`);
+        toast.error(`Error updating store: ${String(error)}`);
       }
     },
     [key]
@@ -108,22 +48,11 @@ export function useLocalStorageStore<T>(key: string, initialValue: T) {
 
   const clearStore = useCallback(() => {
     try {
+      const oldValue = localStorage.getItem(key);
       localStorage.removeItem(key);
       snapshotCache.current = initialValue;
-      
-      window.dispatchEvent(
-        new CustomEvent("localStorageUpdate", { detail: { key } })
-      );
-      
-      window.dispatchEvent(
-        new StorageEvent("storage", {
-          key,
-          newValue: null,
-          oldValue: localStorage.getItem(key),
-          storageArea: localStorage,
-          url: window.location.href,
-        })
-      );
+
+      dispatchStorageEvent(key, null, oldValue);
     } catch (error) {
       toast.error(`Error clearing store: ${String(error)}`);
     }

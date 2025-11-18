@@ -14,52 +14,35 @@ import {
   resetPasswordSuccess,
   resetPasswordFailure,
 } from "reduxToolkit/auth/authSlice";
-
-const getFromStorage = <T,>(key: string, fallback: T): T => {
-  try {
-    const stored = localStorage.getItem(key);
-
-    return stored ? (JSON.parse(stored) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-};
-
-const setToStorage = <T,>(key: string, value: T) => {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-    window.dispatchEvent(new Event("storage"));
-  } catch (error) {
-    alert(`${error instanceof Error ? error.message : String(error)}`);
-  }
-};
-
-const getUsersFromLocalStorage = () =>
-  getFromStorage<Array<{ fullName?: string; email: string; password: string }>>("users", []);
-
-const saveUsersToLocalStorage = (
-  users: Array<{ fullName?: string; email: string; password: string }>
-) => {
-  setToStorage("users", users);
-};
+import {
+  getUsersFromLocalStorage,
+  saveUsersToLocalStorage,
+  saveUserToAuth,
+} from "reduxToolkit/auth/helpers/authStorage";
+import {
+  findUserByEmail,
+  validateCredentials,
+  userExists,
+} from "reduxToolkit/auth/helpers/authValidators";
 
 export const login =
   (email: string, password: string): AppThunk =>
   (dispatch) => {
     dispatch(loginStart());
+
     setTimeout(() => {
       const users = getUsersFromLocalStorage();
-      const user = users.find((u) => u.email === email);
+      const user = findUserByEmail(users, email);
 
       if (!user) {
         dispatch(loginFailure());
         toast.error("User not found, please signup");
-      } else if (user.password !== password) {
+      } else if (!validateCredentials(user, password)) {
         dispatch(loginFailure());
         toast.error("Invalid credentials");
       } else {
         dispatch(loginSuccess(user));
-        setToStorage("auth", { isAuthenticated: true, user });
+        saveUserToAuth(user);
         toast.success(`Welcome back, ${user.fullName || user.email}!`);
       }
     }, 500);
@@ -69,11 +52,11 @@ export const signup =
   (fullName: string, email: string, password: string): AppThunk =>
   (dispatch) => {
     dispatch(signupStart());
+
     setTimeout(() => {
       const users = getUsersFromLocalStorage();
-      const exists = users.find((u) => u.email === email);
 
-      if (exists) {
+      if (userExists(users, email)) {
         dispatch(signupFailure());
         toast.error("User already exists");
 
@@ -92,9 +75,10 @@ export const forgotPassword =
   (email: string): AppThunk =>
   (dispatch) => {
     dispatch(forgotPasswordStart());
+
     setTimeout(() => {
       const users = getUsersFromLocalStorage();
-      const user = users.find((u) => u.email === email);
+      const user = findUserByEmail(users, email);
 
       if (user) {
         dispatch(forgotPasswordSuccess(email));
@@ -110,6 +94,7 @@ export const resetPassword =
   (newPassword: string): AppThunk =>
   (dispatch, getState) => {
     dispatch(resetPasswordStart());
+
     setTimeout(() => {
       const { forgotEmail } = getState().auth;
 
@@ -136,4 +121,3 @@ export const resetPassword =
       toast.success("Password updated successfully! Please login with your new password.");
     }, 500);
   };
-  

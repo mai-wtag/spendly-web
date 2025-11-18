@@ -1,17 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { 
-  DashboardState, 
-  Transaction, 
+import type {
+  DashboardState,
+  Transaction,
   Goal,
   AddTransactionPayload,
-  AddGoalPayload 
+  AddGoalPayload,
 } from "utils/dashboardTypes";
-import { 
-  calculateStatsFromTransactions, 
+import {
+  calculateStatsFromTransactions,
   updateCashFlowForTransaction,
-  removeCashFlowForTransaction 
+  removeCashFlowForTransaction,
 } from "reduxToolkit/dashboard/helpers/statsCalculator";
+import { createTransaction, createGoal } from "reduxToolkit/dashboard/helpers/transactionHelpers";
 
 const initialState: DashboardState = {
   stats: {
@@ -39,15 +40,7 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {
     addTransaction: (state, action: PayloadAction<AddTransactionPayload>) => {
-      const newTransaction: Transaction = {
-        id: `txn-${Date.now()}`,
-        description: action.payload.description,
-        amount: action.payload.amount,
-        type: action.payload.type,
-        category: action.payload.category,
-        date: new Date().toISOString().split("T")[0],
-        createdAt: new Date().toISOString(),
-      };
+      const newTransaction = createTransaction(action.payload);
       state.transactions.unshift(newTransaction);
 
       if (newTransaction.type === "income") {
@@ -58,13 +51,50 @@ const dashboardSlice = createSlice({
         state.stats.totalBalance -= newTransaction.amount;
       }
 
-      state.stats.monthlySavings = state.stats.monthlyIncome - state.stats.monthlyExpense;
+      state.stats.monthlySavings =
+        state.stats.monthlyIncome - state.stats.monthlyExpense;
 
       updateCashFlowForTransaction(state.cashFlow, newTransaction);
     },
 
+    updateTransaction: (state, action: PayloadAction<Transaction>) => {
+      const index = state.transactions.findIndex(
+        (t) => t.id === action.payload.id
+      );
+
+      if (index !== -1) {
+        const oldTransaction = state.transactions[index];
+
+        if (oldTransaction.type === "income") {
+          state.stats.monthlyIncome -= oldTransaction.amount;
+          state.stats.totalBalance -= oldTransaction.amount;
+        } else {
+          state.stats.monthlyExpense -= oldTransaction.amount;
+          state.stats.totalBalance += oldTransaction.amount;
+        }
+
+        removeCashFlowForTransaction(state.cashFlow, oldTransaction);
+
+        state.transactions[index] = action.payload;
+
+        if (action.payload.type === "income") {
+          state.stats.monthlyIncome += action.payload.amount;
+          state.stats.totalBalance += action.payload.amount;
+        } else {
+          state.stats.monthlyExpense += action.payload.amount;
+          state.stats.totalBalance -= action.payload.amount;
+        }
+
+        state.stats.monthlySavings =
+          state.stats.monthlyIncome - state.stats.monthlyExpense;
+        updateCashFlowForTransaction(state.cashFlow, action.payload);
+      }
+    },
+
     deleteTransaction: (state, action: PayloadAction<string>) => {
-      const transaction = state.transactions.find((t) => t.id === action.payload);
+      const transaction = state.transactions.find(
+        (t) => t.id === action.payload
+      );
 
       if (transaction) {
         if (transaction.type === "income") {
@@ -75,27 +105,26 @@ const dashboardSlice = createSlice({
           state.stats.totalBalance += transaction.amount;
         }
 
-        state.stats.monthlySavings = state.stats.monthlyIncome - state.stats.monthlyExpense;
+        state.stats.monthlySavings =
+          state.stats.monthlyIncome - state.stats.monthlyExpense;
 
         removeCashFlowForTransaction(state.cashFlow, transaction);
 
-        state.transactions = state.transactions.filter((t) => t.id !== action.payload);
+        state.transactions = state.transactions.filter(
+          (t) => t.id !== action.payload
+        );
       }
     },
 
     addGoal: (state, action: PayloadAction<AddGoalPayload>) => {
-      const newGoal: Goal = {
-        id: `goal-${Date.now()}`,
-        title: action.payload.title,
-        targetAmount: action.payload.targetAmount,
-        currentAmount: 0,
-        deadline: action.payload.deadline,
-        category: action.payload.category,
-      };
+      const newGoal = createGoal(action.payload);
       state.goals.push(newGoal);
     },
 
-    updateGoalProgress: (state, action: PayloadAction<{ id: string; amount: number }>) => {
+    updateGoalProgress: (
+      state,
+      action: PayloadAction<{ id: string; amount: number }>
+    ) => {
       const goal = state.goals.find((g) => g.id === action.payload.id);
 
       if (goal) {
@@ -112,7 +141,10 @@ const dashboardSlice = createSlice({
 
     setTransactions: (state, action: PayloadAction<Transaction[]>) => {
       state.transactions = action.payload;
-      const { stats, cashFlow } = calculateStatsFromTransactions(action.payload, state.cashFlow);
+      const { stats, cashFlow } = calculateStatsFromTransactions(
+        action.payload,
+        state.cashFlow
+      );
       state.stats = stats;
       state.cashFlow = cashFlow;
     },
@@ -121,7 +153,10 @@ const dashboardSlice = createSlice({
       state.goals = action.payload;
     },
 
-    updateStats: (state, action: PayloadAction<Partial<DashboardState["stats"]>>) => {
+    updateStats: (
+      state,
+      action: PayloadAction<Partial<DashboardState["stats"]>>
+    ) => {
       state.stats = { ...state.stats, ...action.payload };
     },
 
@@ -139,6 +174,7 @@ const dashboardSlice = createSlice({
 
 export const {
   addTransaction,
+  updateTransaction,
   deleteTransaction,
   addGoal,
   updateGoalProgress,
