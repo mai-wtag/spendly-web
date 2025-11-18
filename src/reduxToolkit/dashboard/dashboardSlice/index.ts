@@ -13,9 +13,9 @@ import {
   calculateStatsFromTransactions,
   updateCashFlowForTransaction,
   removeCashFlowForTransaction,
-} from "reduxToolkit/dashboard/helpers/statsCalculator";
-import { createTransaction, createGoal } from "reduxToolkit/dashboard/helpers/transactionHelpers";
-import { createBudget } from "reduxToolkit/dashboard/helpers/budgetHelpers";
+} from "../../dashboard/helpers/statsCalculator";
+import { createTransaction, createGoal } from "../../dashboard/helpers/transactionHelpers";
+import { createBudget } from "../../dashboard/helpers/budgetHelpers";
 
 const initialState: DashboardState = {
   stats: {
