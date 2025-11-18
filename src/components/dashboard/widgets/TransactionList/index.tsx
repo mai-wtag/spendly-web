@@ -30,25 +30,21 @@ const TransactionList: React.FC<TransactionListProps> = ({
       return "Yesterday";
     }
 
-    const diffDays = Math.floor((today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-
-    if (diffDays < 7) {
-      return `${diffDays} days ago`;
-    }
-
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    return date.toLocaleDateString("en-US", { 
+      month: "short", 
+      day: "numeric",
+      year: date.getFullYear() !== today.getFullYear() ? "numeric" : undefined 
+    });
   };
 
   if (loading) {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="animate-pulse flex justify-between items-center py-3">
-            <div className="flex-1">
-              <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/4"></div>
-            </div>
-            <div className="h-4 bg-gray-200 rounded w-16"></div>
+          <div key={i} className="animate-pulse grid grid-cols-3 gap-4 py-3">
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded"></div>
           </div>
         ))}
       </div>
@@ -68,56 +64,65 @@ const TransactionList: React.FC<TransactionListProps> = ({
   }
 
   return (
-    <div className="space-y-1">
-      {displayTransactions.map((transaction) => (
-        <div
-          key={transaction.id}
-          className="group flex justify-between items-center py-3 px-3 hover:bg-gray-50 rounded-lg transition-colors"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <div
-              className={`flex-shrink-0 p-2 rounded-full ${
-                transaction.type === "income" ? "bg-green-50" : "bg-red-50"
-              }`}
-            >
-              {transaction.type === "income" ? (
-                <ArrowUpCircle size={20} className="text-green-600" />
-              ) : (
-                <ArrowDownCircle size={20} className="text-red-600" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-800 truncate">
-                {transaction.description}
-              </p>
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <span>{transaction.category}</span>
-                <span>•</span>
-                <span>{formatDate(transaction.date)}</span>
+    <div className="overflow-x-auto">
+      <div className="flex gap-4 px-4 py-3 bg-gray-50 rounded-t-lg border-b border-gray-200 text-xs font-semibold text-gray-600 uppercase tracking-wider justify-between">  
+          <span>Activity</span>  
+          <span>Date</span>  
+          <span>Amount</span>  
+      </div>  
+
+      <div className="divide-y divide-gray-100">
+        {displayTransactions.map((transaction) => (
+          <div
+            key={transaction.id}
+            className="group grid grid-cols-3 gap-4 px-4 py-3 hover:bg-gray-50 transition-colors items-center"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className={`flex-shrink-0 p-1.5 rounded-full ${
+                  transaction.type === "income" ? "bg-green-50" : "bg-red-50"
+                }`}
+              >
+                {transaction.type === "income" ? (
+                  <ArrowUpCircle size={16} className="text-green-600" />
+                ) : (
+                  <ArrowDownCircle size={16} className="text-red-600" />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {transaction.description}
+                </p>
+                <p className="text-xs text-gray-500 truncate">{transaction.category}</p>
               </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span
-              className={`text-sm font-semibold whitespace-nowrap ${
-                transaction.type === "income" ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {transaction.type === "income" ? "+" : "-"}$
-              {Math.abs(transaction.amount).toFixed(2)}
-            </span>
-            {onDelete && (
-              <button
-                onClick={() => onDelete(transaction.id)}
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-50 rounded text-red-600"
-                aria-label="Delete transaction"
+
+            <div className="text-sm text-gray-600 text-center">
+              {formatDate(transaction.date)}
+            </div>
+
+            <div className="flex items-center justify-end gap-2">
+              <span
+                className={`text-sm font-semibold whitespace-nowrap ${
+                  transaction.type === "income" ? "text-green-600" : "text-red-600"
+                }`}
               >
-                <Trash2 size={16} />
-              </button>
-            )}
+                {transaction.type === "income" ? "+" : "-"}$
+                {Math.abs(transaction.amount).toFixed(2)}
+              </span>
+              {onDelete && (
+                <button
+                  onClick={() => onDelete(transaction.id)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-50 rounded text-red-600 flex-shrink-0"
+                  aria-label="Delete transaction"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
