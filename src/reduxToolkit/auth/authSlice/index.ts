@@ -29,6 +29,7 @@ const saveUserToLocalStorage = (user: User) => {
   const users: User[] = usersStr ? JSON.parse(usersStr) : [];
 
   const existingIndex = users.findIndex((u) => u.email === user.email);
+  
   if (existingIndex !== -1) {
     users[existingIndex] = user;
   } else {
@@ -112,6 +113,7 @@ export const authSlice = createSlice({
       }
 
       const usersStr = localStorage.getItem("users");
+
       if (usersStr) {
         const users: User[] = JSON.parse(usersStr);
         const index = users.findIndex((u) => u.email === state.forgotEmail);

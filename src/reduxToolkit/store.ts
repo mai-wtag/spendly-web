@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import type { ThunkAction, Action } from "@reduxjs/toolkit";
 import authReducer from "reduxToolkit/auth/authSlice";
+import dashboardReducer from "reduxToolkit/dashboard/dashboardSlice";
 import { localStorageSyncMiddleware } from "reduxToolkit/middleware/localStorageSync";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    dashboard: dashboardReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(localStorageSyncMiddleware),
