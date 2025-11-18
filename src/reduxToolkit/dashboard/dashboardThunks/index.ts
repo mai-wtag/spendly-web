@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import type { AppThunk } from "reduxToolkit/store";
-import type { Transaction } from "utils/dashboardTypes";
+import type { Transaction, AddBudgetPayload, Budget } from "utils/dashboardTypes";
 import {
   addTransaction as addTransactionAction,
   updateTransaction as updateTransactionAction,
@@ -8,6 +8,9 @@ import {
   deleteTransaction as deleteTransactionAction,
   deleteGoal as deleteGoalAction,
   updateGoalProgress as updateGoalProgressAction,
+  addBudget as addBudgetAction,
+  deleteBudget as deleteBudgetAction,
+  setBudgets,
   setTransactions,
   setGoals,
   setLoading,
@@ -164,5 +167,72 @@ export const updateTransaction =
       toast.error(
         `Failed to update transaction: ${error instanceof Error ? error.message : String(error)}`
       );
+    }
+  };
+
+const saveBudgetsToStorage = (budgets: Budget[]): void => {
+  try {
+    localStorage.setItem("budgets", JSON.stringify(budgets));
+  } catch (error) {
+    toast.error(`Failed to save budgets: ${String(error)}`);
+  }
+};
+
+const loadBudgetsFromStorage = (): Budget[] | null => {
+  try {
+    const stored = localStorage.getItem("budgets");
+
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
+};
+
+export const loadBudgets = (): AppThunk => (dispatch) => {
+  try {
+    const budgets = loadBudgetsFromStorage();
+    
+    if (budgets) {
+      dispatch(setBudgets(budgets));
+    }
+  } catch (error) {
+    toast.error(`Failed to load budgets: ${String(error)}`);
+  }
+};
+
+export const addBudget =
+  (payload: AddBudgetPayload): AppThunk =>
+  (dispatch, getState) => {
+    try {
+      dispatch(setLoading(true));
+
+      setTimeout(() => {
+        dispatch(addBudgetAction(payload));
+
+        const state = getState();
+        saveBudgetsToStorage(state.dashboard.budgets);
+
+        dispatch(setLoading(false));
+        toast.success(`Budget for "${payload.category}" created!`);
+      }, 300);
+    } catch (error) {
+      dispatch(setError("Failed to add budget"));
+      dispatch(setLoading(false));
+      toast.error(`Failed to create budget: ${String(error)}`);
+    }
+  };
+
+export const deleteBudget =
+  (id: string): AppThunk =>
+  (dispatch, getState) => {
+    try {
+      dispatch(deleteBudgetAction(id));
+
+      const state = getState();
+      saveBudgetsToStorage(state.dashboard.budgets);
+
+      toast.success("Budget deleted!");
+    } catch (error) {
+      toast.error(`Failed to delete budget: ${String(error)}`);
     }
   };

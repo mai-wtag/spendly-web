@@ -6,6 +6,8 @@ import type {
   Goal,
   AddTransactionPayload,
   AddGoalPayload,
+  AddBudgetPayload,
+  Budget,
 } from "utils/dashboardTypes";
 import {
   calculateStatsFromTransactions,
@@ -13,6 +15,7 @@ import {
   removeCashFlowForTransaction,
 } from "reduxToolkit/dashboard/helpers/statsCalculator";
 import { createTransaction, createGoal } from "reduxToolkit/dashboard/helpers/transactionHelpers";
+import { createBudget } from "reduxToolkit/dashboard/helpers/budgetHelpers";
 
 const initialState: DashboardState = {
   stats: {
@@ -23,6 +26,7 @@ const initialState: DashboardState = {
   },
   transactions: [],
   goals: [],
+  budgets: [],
   cashFlow: [
     { month: "Jul", income: 0, expense: 0 },
     { month: "Aug", income: 0, expense: 0 },
@@ -139,6 +143,19 @@ const dashboardSlice = createSlice({
       state.goals = state.goals.filter((g) => g.id !== action.payload);
     },
 
+    addBudget: (state, action: PayloadAction<AddBudgetPayload>) => {
+      const newBudget = createBudget(action.payload);
+      state.budgets.push(newBudget);
+    },
+
+    deleteBudget: (state, action: PayloadAction<string>) => {
+      state.budgets = state.budgets.filter((b) => b.id !== action.payload);
+    },
+
+    setBudgets: (state, action: PayloadAction<Budget[]>) => {
+      state.budgets = action.payload;
+    },
+
     setTransactions: (state, action: PayloadAction<Transaction[]>) => {
       state.transactions = action.payload;
       const { stats, cashFlow } = calculateStatsFromTransactions(
@@ -181,6 +198,9 @@ export const {
   deleteGoal,
   setTransactions,
   setGoals,
+  addBudget,
+  deleteBudget,
+  setBudgets,
   updateStats,
   setLoading,
   setError,
