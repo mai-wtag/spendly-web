@@ -1,11 +1,13 @@
+import { Route, Routes } from "react-router-dom"
+import Login from "pages/Login"
 
 
 function App() {
 
   return (
-    <div className='bg-red-100 flex w-full h-screen text-pink-700'>
-      Tahim
-    </div>
+    <Routes>
+      <Route path="/" element={<Login/>}/>
+    </Routes>
   )
 }
 
