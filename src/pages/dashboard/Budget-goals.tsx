@@ -31,7 +31,7 @@ const BudgetGoals: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-6">
       <PageHeader
         title="Budget & Goals"
         description="Track your financial goals and budgets"
