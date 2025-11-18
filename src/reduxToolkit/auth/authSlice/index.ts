@@ -23,6 +23,7 @@ const initialState: AuthState = {
   isInitialized: false,
 };
 
+
 const saveUserToLocalStorage = (user: User) => {
   const usersStr = localStorage.getItem("users");
   const users: User[] = usersStr ? JSON.parse(usersStr) : [];
