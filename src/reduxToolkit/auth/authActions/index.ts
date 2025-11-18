@@ -18,12 +18,12 @@ import {
   getUsersFromLocalStorage,
   saveUsersToLocalStorage,
   saveUserToAuth,
-} from "reduxToolkit/auth/helpers/authStorage";
+} from "reduxToolkit/auth/helpers/authStorage/index";
 import {
   findUserByEmail,
   validateCredentials,
   userExists,
-} from "reduxToolkit/auth/helpers/authValidators";
+} from "reduxToolkit/auth/helpers/authValidators/index";
 
 export const login =
   (email: string, password: string): AppThunk =>
