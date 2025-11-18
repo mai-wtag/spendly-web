@@ -1,9 +1,19 @@
+import { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import type { RootState, AppDispatch } from "reduxToolkit/store";
+import { signup } from "reduxToolkit/auth/authActions";
+import { ROUTES } from "routes/paths";
+import type { AuthFormConfig } from "utils/formTypes";
 import AuthFormBuilder from "components/auth/AuthFormBuilder";
 import AuthLayout from "components/auth/AuthLayout";
-import { ROUTES } from "routes/paths";
-import type { AuthFormConfig } from "components/auth/utils/types";
 
 const Signup: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { user, loading, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const prevLoadingRef = useRef(loading);
+
   const formConfig: AuthFormConfig = {
     title: "Create your Spendly account",
     description: "Join us to manage your finances.",
@@ -24,7 +34,7 @@ const Signup: React.FC = () => {
         placeholder: "Email Address",
         required: true,
         validations: [
-          { type: "required" },
+          { type: "required", message: "Email is required" },
           { type: "email", message: "Invalid email address" },
         ],
       },
@@ -35,7 +45,7 @@ const Signup: React.FC = () => {
         placeholder: "Password",
         required: true,
         validations: [
-          { type: "required" },
+          { type: "required", message: "Password is required" },
           { type: "minLength", value: 6, message: "Password must be at least 6 characters" },
         ],
       },
@@ -46,16 +56,27 @@ const Signup: React.FC = () => {
         placeholder: "Confirm Password",
         required: true,
         validations: [
-          { type: "required" },
+          { type: "required", message: "Please confirm your password" },
           { type: "match", value: "password", message: "Passwords must match" },
         ],
       },
     ],
   };
 
-  const handleSubmit = () => {
-
+  const handleSubmit = (values: Record<string, string>) => {
+    dispatch(signup(values.fullName, values.email, values.password));
   };
+
+
+  useEffect(() => {
+    if (prevLoadingRef.current && !loading && user && !isAuthenticated) {
+      setTimeout(() => {
+        navigate(ROUTES.LOGIN, { replace: true });
+      }, 1000);
+    }
+    
+    prevLoadingRef.current = loading;
+  }, [loading, user, isAuthenticated, navigate]);
 
   return (
     <AuthLayout
@@ -67,7 +88,7 @@ const Signup: React.FC = () => {
     >
       <AuthFormBuilder
         fields={formConfig.fields}
-        submitButtonLabel={formConfig.submitButtonLabel}
+        submitButtonLabel={loading ? "Creating..." : formConfig.submitButtonLabel}
         onSubmit={handleSubmit}
       />
     </AuthLayout>

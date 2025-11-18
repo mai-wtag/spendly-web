@@ -3,8 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Input from "components/base-components/Input";
 import Button from "components/base-components/Button";
-import { generateSchema } from "components/auth/utils/generateSchema";
-import type { FormField } from "components/auth/utils/types";
+import { generateSchema } from "utils/generateSchema";
+import type { FormField } from "utils/formTypes";
 
 export interface Field {
   name: string;
@@ -27,14 +27,12 @@ interface AuthFormBuilderProps {
   fields: FormField[];
   submitButtonLabel: string;
   onSubmit: (formValues: Record<string, string>) => void;
-  error?: string;
 }
 
 const AuthFormBuilder: React.FC<AuthFormBuilderProps> = ({
   fields,
   submitButtonLabel,
   onSubmit,
-  error,
 }) => {
   const schema = generateSchema(fields);
   type FormData = z.infer<typeof schema>;
@@ -58,7 +56,7 @@ const AuthFormBuilder: React.FC<AuthFormBuilderProps> = ({
   return (
     <form
       onSubmit={handleSubmit(onSubmitHandler)}
-      className="w-full max-w-md space-y-6"
+      className="space-y-6"
     >
       {fields.map((field) => (
         <Input
@@ -71,8 +69,7 @@ const AuthFormBuilder: React.FC<AuthFormBuilderProps> = ({
         />
       ))}
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
-      <Button type="submit" text={submitButtonLabel} />
+      <Button type="submit" text={submitButtonLabel} fullWidth/>
     </form>
   );
 };

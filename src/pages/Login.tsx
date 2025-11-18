@@ -1,10 +1,21 @@
-import { Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "reduxToolkit/store";
+import { login } from "reduxToolkit/auth/authActions";
+import { useLocalStorageStore } from "hooks/useLocalStorageStore";
 import { ROUTES } from "routes/paths";
-import type { AuthFormConfig } from "components/auth/utils/types";
+import type { AuthFormConfig } from "utils/formTypes";
 import AuthFormBuilder from "components/auth/AuthFormBuilder";
 import AuthLayout from "components/auth/AuthLayout";
 
 const Login: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { isAuthenticated, loading, user } = useSelector((state: RootState) => state.auth);
+  const prevLoadingRef = useRef(loading);
+  const [authStorage] = useLocalStorageStore<{ isAuthenticated: boolean } | null>("auth", null);
+
   const formConfig: AuthFormConfig = {
     title: "Welcome Back",
     description: "Log in to manage your finances.",
@@ -29,15 +40,34 @@ const Login: React.FC = () => {
         required: true,
         validations: [
           { type: "required", message: "Password is required" },
-          { type: "minLength", value: 6, message: "Password must be at least 6 characters" },
+          {
+            type: "minLength",
+            value: 6,
+            message: "Password must be at least 6 characters",
+          },
         ],
       },
     ],
   };
 
-  const handleSubmit = () => {
-    
+  const handleSubmit = (values: Record<string, string>) => {
+    dispatch(login(values.email, values.password));
   };
+
+ 
+  useEffect(() => {
+    if (prevLoadingRef.current && !loading && isAuthenticated && user) {
+      setTimeout(() => {
+        navigate(ROUTES.DASHBOARD, { replace: true });
+      }, 500);
+    }
+    
+    if (!loading && authStorage?.isAuthenticated && !isAuthenticated) {
+      navigate(ROUTES.DASHBOARD, { replace: true });
+    }
+    
+    prevLoadingRef.current = loading;
+  }, [isAuthenticated, loading, user, authStorage, navigate]);
 
   return (
     <AuthLayout
@@ -49,7 +79,7 @@ const Login: React.FC = () => {
     >
       <AuthFormBuilder
         fields={formConfig.fields}
-        submitButtonLabel={formConfig.submitButtonLabel}
+        submitButtonLabel={loading ? "Logging in..." : formConfig.submitButtonLabel}
         onSubmit={handleSubmit}
       />
       <Link

@@ -1,5 +1,5 @@
 import Logo from "assets/Logo";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 interface AuthLayoutProps {
   title: string;

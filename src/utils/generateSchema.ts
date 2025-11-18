@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { FormField, ValidationRule } from "components/auth/utils/types";
+import type { FormField, ValidationRule } from "utils/formTypes";
 
 export const generateSchema = (fields: FormField[]) => {
   const shape: Record<string, z.ZodString> = {};

@@ -1,11 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "reduxToolkit/store";
+import { forgotPassword } from "reduxToolkit/auth/authActions";
 import { ROUTES } from "routes/paths";
+import type { AuthFormConfig } from "utils/formTypes";
 import AuthFormBuilder from "components/auth/AuthFormBuilder";
 import AuthLayout from "components/auth/AuthLayout";
-import type { AuthFormConfig } from "components/auth/utils/types";
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, forgotEmail } = useSelector((state: RootState) => state.auth);
+  const prevLoadingRef = useRef(loading);
 
   const formConfig: AuthFormConfig = {
     title: "Forgot Password?",
@@ -26,9 +33,18 @@ const ForgotPassword: React.FC = () => {
       },
     ],
   };
-  const handleSubmit = () => {
-    navigate(ROUTES.RESET_PASSWORD);
+
+  const handleSubmit = (values: Record<string, string>) => {
+    dispatch(forgotPassword(values.email));
   };
+
+  useEffect(() => {
+    if (prevLoadingRef.current && !loading && forgotEmail) {
+      navigate(ROUTES.RESET_PASSWORD, { replace: true });
+    }
+    
+    prevLoadingRef.current = loading;
+  }, [loading, forgotEmail, navigate]);
 
   return (
     <AuthLayout
@@ -40,7 +56,7 @@ const ForgotPassword: React.FC = () => {
     >
       <AuthFormBuilder
         fields={formConfig.fields}
-        submitButtonLabel={formConfig.submitButtonLabel}
+        submitButtonLabel={loading ? "Verifying..." : formConfig.submitButtonLabel}
         onSubmit={handleSubmit}
       />
     </AuthLayout>

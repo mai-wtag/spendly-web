@@ -1,11 +1,20 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import type { RootState, AppDispatch } from "reduxToolkit/store";
+import { resetPassword } from "reduxToolkit/auth/authActions";
 import { ROUTES } from "routes/paths";
+import type { AuthFormConfig } from "utils/formTypes";
 import AuthFormBuilder from "components/auth/AuthFormBuilder";
 import AuthLayout from "components/auth/AuthLayout";
-import type { AuthFormConfig } from "components/auth/utils/types";
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, forgotEmail } = useSelector((state: RootState) => state.auth);
+  const prevLoadingRef = useRef(loading);
+  const hasShownErrorRef = useRef(false);
 
   const formConfig: AuthFormConfig = {
     title: "Set New Password",
@@ -20,7 +29,7 @@ const ResetPassword: React.FC = () => {
         placeholder: "Enter new password",
         required: true,
         validations: [
-          { type: "required" },
+          { type: "required", message: "Password is required" },
           { type: "minLength", value: 6, message: "Password must be at least 6 characters" },
         ],
       },
@@ -31,16 +40,34 @@ const ResetPassword: React.FC = () => {
         placeholder: "Confirm new password",
         required: true,
         validations: [
-          { type: "required" },
+          { type: "required", message: "Confirm Password is required" },
           { type: "match", value: "password", message: "Passwords must match" },
         ],
       },
     ],
   };
 
-  const handleSubmit = () => {
-    navigate(ROUTES.LOGIN);
+  const handleSubmit = (values: Record<string, string>) => {
+    dispatch(resetPassword(values.password));
   };
+
+  useEffect(() => {
+    if (!forgotEmail && !hasShownErrorRef.current) {
+      toast.error("Please verify your email first");
+      hasShownErrorRef.current = true;
+      navigate(ROUTES.FORGOT_PASSWORD, { replace: true });
+
+      return;
+    }
+
+    if (prevLoadingRef.current && !loading && !forgotEmail) {
+      setTimeout(() => {
+        navigate(ROUTES.LOGIN, { replace: true });
+      }, 1000);
+    }
+    
+    prevLoadingRef.current = loading;
+  }, [loading, forgotEmail, navigate]);
 
   return (
     <AuthLayout
@@ -52,7 +79,7 @@ const ResetPassword: React.FC = () => {
     >
       <AuthFormBuilder
         fields={formConfig.fields}
-        submitButtonLabel={formConfig.submitButtonLabel}
+        submitButtonLabel={loading ? "Updating..." : formConfig.submitButtonLabel}
         onSubmit={handleSubmit}
       />
     </AuthLayout>
