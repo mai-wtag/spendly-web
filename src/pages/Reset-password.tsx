@@ -9,8 +9,7 @@ const ResetPassword: React.FC = () => {
 
   const formConfig: AuthFormConfig = {
     title: "Set New Password",
-    description:
-      "Enter a strong password and confirm it to update your account.",
+    description: "Enter a strong password and confirm it to update your account.",
     submitButtonLabel: "Update Password",
     redirectLink: { text: "Back to Log In", to: ROUTES.LOGIN },
     fields: [
@@ -20,6 +19,10 @@ const ResetPassword: React.FC = () => {
         type: "password",
         placeholder: "Enter new password",
         required: true,
+        validations: [
+          { type: "required" },
+          { type: "minLength", value: 6, message: "Password must be at least 6 characters" },
+        ],
       },
       {
         id: "confirmPassword",
@@ -27,6 +30,10 @@ const ResetPassword: React.FC = () => {
         type: "password",
         placeholder: "Confirm new password",
         required: true,
+        validations: [
+          { type: "required" },
+          { type: "match", value: "password", message: "Passwords must match" },
+        ],
       },
     ],
   };

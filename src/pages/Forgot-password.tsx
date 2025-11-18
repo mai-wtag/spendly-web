@@ -19,10 +19,13 @@ const ForgotPassword: React.FC = () => {
         type: "email",
         placeholder: "Enter your email",
         required: true,
+        validations: [
+          { type: "required", message: "Email is required" },
+          { type: "email", message: "Invalid email address" },
+        ],
       },
     ],
   };
-
   const handleSubmit = () => {
     navigate(ROUTES.RESET_PASSWORD);
   };

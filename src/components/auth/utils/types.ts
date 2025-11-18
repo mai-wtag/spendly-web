@@ -1,3 +1,9 @@
+export interface ValidationRule {
+  type: "required" | "email" | "minLength" | "maxLength" | "match";
+  value?: number | string;
+  message?: string; 
+}
+
 export interface FormField<T = HTMLInputElement | HTMLSelectElement> {
   id: string;
   name: string;
@@ -8,6 +14,7 @@ export interface FormField<T = HTMLInputElement | HTMLSelectElement> {
   options?: { label: string; value: string }[];
   component?: React.ComponentType<FormFieldProps>;
   onChange?: (e: React.ChangeEvent<T>) => void;
+  validations?: ValidationRule[];
 }
 
 export interface FormFieldProps {

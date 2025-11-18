@@ -15,6 +15,7 @@ const Signup: React.FC = () => {
         name: "fullName",
         placeholder: "Full Name",
         required: true,
+        validations: [{ type: "required", message: "Full Name is required" }],
       },
       {
         id: "email",
@@ -22,6 +23,10 @@ const Signup: React.FC = () => {
         type: "email",
         placeholder: "Email Address",
         required: true,
+        validations: [
+          { type: "required" },
+          { type: "email", message: "Invalid email address" },
+        ],
       },
       {
         id: "password",
@@ -29,6 +34,10 @@ const Signup: React.FC = () => {
         type: "password",
         placeholder: "Password",
         required: true,
+        validations: [
+          { type: "required" },
+          { type: "minLength", value: 6, message: "Password must be at least 6 characters" },
+        ],
       },
       {
         id: "confirm-password",
@@ -36,6 +45,10 @@ const Signup: React.FC = () => {
         type: "password",
         placeholder: "Confirm Password",
         required: true,
+        validations: [
+          { type: "required" },
+          { type: "match", value: "password", message: "Passwords must match" },
+        ],
       },
     ],
   };
